@@ -1,0 +1,6 @@
+{
+  "name": "مداد",
+  "description": "تطبيق التغذية واللياقة البدنية الشامل الذكي - Midad Fitness & Nutrition",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
