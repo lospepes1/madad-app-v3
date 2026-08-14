@@ -56,6 +56,9 @@ class MidadViewModel(application: Application) : AndroidViewModel(application) {
     private val _dashboardTab = MutableStateFlow(0) // 0: Exercises, 1: Nutrition
     val dashboardTab: StateFlow<Int> = _dashboardTab.asStateFlow()
 
+    private val _isDarkMode = MutableStateFlow(true)
+    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+
     init {
         loadSavedData()
     }
@@ -67,6 +70,7 @@ class MidadViewModel(application: Application) : AndroidViewModel(application) {
         val savedNutrition = prefsManager.getNutritionPlan()
         val savedWorkout = prefsManager.getWorkoutPlan()
         _waterGlasses.value = prefsManager.getWaterGlasses()
+        _isDarkMode.value = prefsManager.isDarkMode()
 
         if (savedProfile != null) {
             _userProfile.value = savedProfile.copy(language = savedLang)
@@ -207,5 +211,16 @@ class MidadViewModel(application: Application) : AndroidViewModel(application) {
 
     fun resetProfileToEdit() {
         _currentScreen.value = Screen.PERSONAL_DATA
+    }
+
+    fun toggleDarkMode() {
+        val newMode = !_isDarkMode.value
+        _isDarkMode.value = newMode
+        prefsManager.saveDarkMode(newMode)
+    }
+
+    fun setDarkMode(isDark: Boolean) {
+        _isDarkMode.value = isDark
+        prefsManager.saveDarkMode(isDark)
     }
 }

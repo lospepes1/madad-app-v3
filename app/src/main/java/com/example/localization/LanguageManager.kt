@@ -58,21 +58,45 @@ object LanguageManager {
     }
 
     fun ageLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "العمر (سنوات)"
-        AppLanguage.FR -> "Âge (ans)"
-        AppLanguage.EN -> "Age (years)"
+        AppLanguage.AR -> "العمر (سنوات) *"
+        AppLanguage.FR -> "Âge (ans) *"
+        AppLanguage.EN -> "Age (years) *"
+    }
+
+    fun agePlaceholder(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مثال: 25"
+        AppLanguage.FR -> "ex. 25"
+        AppLanguage.EN -> "e.g., 25"
     }
 
     fun heightLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الطول (سم - cm)"
-        AppLanguage.FR -> "Taille (cm)"
-        AppLanguage.EN -> "Height (cm)"
+        AppLanguage.AR -> "الطول (سم - cm) *"
+        AppLanguage.FR -> "Taille (cm) *"
+        AppLanguage.EN -> "Height (cm) *"
+    }
+
+    fun heightPlaceholder(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مثال: 175"
+        AppLanguage.FR -> "ex. 175"
+        AppLanguage.EN -> "e.g., 175"
     }
 
     fun weightLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الوزن الحالي (كغ - kg)"
-        AppLanguage.FR -> "Poids actuel (kg)"
-        AppLanguage.EN -> "Current Weight (kg)"
+        AppLanguage.AR -> "الوزن الحالي (كغ - kg) *"
+        AppLanguage.FR -> "Poids actuel (kg) *"
+        AppLanguage.EN -> "Current Weight (kg) *"
+    }
+
+    fun weightPlaceholder(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مثال: 75"
+        AppLanguage.FR -> "ex. 75"
+        AppLanguage.EN -> "e.g., 75"
+    }
+
+    fun genderRequiredLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الجنس *"
+        AppLanguage.FR -> "Genre *"
+        AppLanguage.EN -> "Gender *"
     }
 
     fun btnNext(lang: AppLanguage): String = when (lang) {
@@ -82,9 +106,9 @@ object LanguageManager {
     }
 
     fun fillAllDataNotice(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "يرجى إكمال 100% من البيانات للمتابعة"
-        AppLanguage.FR -> "Veuillez compléter 100% des données pour continuer"
-        AppLanguage.EN -> "Please complete 100% of the required data to proceed"
+        AppLanguage.AR -> "⚠️ يرجى اختيار الجنس وإدخال العمر والطول والوزن للمتابعة"
+        AppLanguage.FR -> "⚠️ Veuillez choisir le genre et renseigner l'âge, la taille et le poids"
+        AppLanguage.EN -> "⚠️ Please select gender and enter valid age, height, and weight"
     }
 
     // Screen 3
@@ -271,8 +295,88 @@ object LanguageManager {
     }
 
     fun youtubeWatchBtn(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "مشاهدة الشرح"
+        AppLanguage.AR -> "شرح التمرين"
         AppLanguage.FR -> "Voir tuto"
-        AppLanguage.EN -> "Watch Tutorial"
+        AppLanguage.EN -> "Watch Guide"
     }
+
+    fun tutorialModalTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🎥 شرح التمرين وتكنيك الأداء الصحيح"
+        AppLanguage.FR -> "🎥 Guide d'Exécution & Vidéo"
+        AppLanguage.EN -> "🎥 Exercise Form & Video Guide"
+    }
+
+    fun setupPositionLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "وضعية الجسم والتمركز"
+        AppLanguage.FR -> "Position & Posture de Départ"
+        AppLanguage.EN -> "Setup & Body Positioning"
+    }
+
+    fun gripLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "المسكة والقبضة"
+        AppLanguage.FR -> "Prise en main & Alignement"
+        AppLanguage.EN -> "Grip & Hand Placement"
+    }
+
+    fun executionLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "طريقة الأداء والمدى الحركي"
+        AppLanguage.FR -> "Mouvement & Exécution"
+        AppLanguage.EN -> "Execution & Range of Motion"
+    }
+
+    fun breathingSafetyLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "التنفس وتجنب الأخطاء"
+        AppLanguage.FR -> "Respiration & Conseils de Sécurité"
+        AppLanguage.EN -> "Breathing & Safety Tips"
+    }
+
+    fun closeTutorialBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إغلاق والعودة للجدول"
+        AppLanguage.FR -> "Fermer le tutoriel"
+        AppLanguage.EN -> "Close & Return to Workout"
+    }
+
+    fun tdeeDialogTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ما هو TDEE؟"
+        AppLanguage.FR -> "Qu'est-ce que le TDEE ?"
+        AppLanguage.EN -> "What is TDEE?"
+    }
+
+    fun tdeeDialogContent(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "هو إجمالي السعرات الحرارية التي يحرقها جسمك يومياً بناءً على بياناتك الشخصية ومستوى نشاطك. يساعدك هذا الرقم في معرفة كمية الطعام المناسبة لهدفك (خسارة أو زيادة الوزن)."
+        AppLanguage.FR -> "C'est la dépense énergétique journalière totale de votre corps selon vos données personnelles et votre niveau d'activité. Ce chiffre vous aide à connaître la quantité de nourriture appropriée à votre objectif (perte ou prise de poids)."
+        AppLanguage.EN -> "It is the total calories your body burns per day based on your personal metrics and activity level. This number helps you determine the right calorie intake for your goal (weight loss or muscle gain)."
+    }
+
+    fun bmiDialogTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ما هو BMI؟"
+        AppLanguage.FR -> "Qu'est-ce que le BMI (IMC) ?"
+        AppLanguage.EN -> "What is BMI?"
+    }
+
+    fun bmiDialogContent(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "هو مؤشر كتلة الجسم، وهو قياس يعتمد على وزنك وطولك لمعرفة ما إذا كان وزنك مثالياً أو يحتاج لتعديل."
+        AppLanguage.FR -> "C'est l'Indice de Masse Corporelle, une mesure basée sur votre poids et votre taille pour évaluer si votre corpulence est idéale ou nécessite un ajustement."
+        AppLanguage.EN -> "It is the Body Mass Index, a measurement based on your weight and height to determine if your weight is in a healthy range or needs adjustment."
+    }
+
+    fun closeBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إغلاق"
+        AppLanguage.FR -> "Fermer"
+        AppLanguage.EN -> "Close"
+    }
+
+    fun darkModeLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الوضع الليلي"
+        AppLanguage.FR -> "Mode Sombre"
+        AppLanguage.EN -> "Dark Mode"
+    }
+
+    fun lightModeLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الوضع النهاري"
+        AppLanguage.FR -> "Mode Clair"
+        AppLanguage.EN -> "Light Mode"
+    }
+
+    fun toggleThemeLabel(lang: AppLanguage, isDark: Boolean): String = if (isDark) lightModeLabel(lang) else darkModeLabel(lang)
 }

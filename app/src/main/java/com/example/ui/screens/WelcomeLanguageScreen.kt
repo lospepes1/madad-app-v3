@@ -12,7 +12,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material3.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,24 +32,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.AppLanguage
 import com.example.localization.LanguageManager
-import com.example.ui.theme.BrightNeonGreen
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkEmeraldCard
-import com.example.ui.theme.DarkEmeraldCardBorder
-import com.example.ui.theme.NeonGreenAccent
-import com.example.ui.theme.TextPrimaryWhite
-import com.example.ui.theme.TextSecondaryGray
+import com.example.ui.components.InstagramFooter
+import com.example.ui.components.ThemeToggleButton
+import com.example.ui.theme.AppTheme
 
 @Composable
 fun WelcomeLanguageScreen(
     selectedLanguage: AppLanguage,
+    isDarkMode: Boolean = true,
+    onToggleDarkMode: () -> Unit = {},
     onLanguageSelected: (AppLanguage) -> Unit,
     onStartClick: () -> Unit
 ) {
+    val colors = AppTheme.colors
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(24.dp)
             .testTag("welcome_language_screen")
     ) {
@@ -55,20 +61,40 @@ fun WelcomeLanguageScreen(
                 .offset(y = (-40).dp)
                 .background(
                     brush = Brush.radialGradient(
-                        colors = listOf(NeonGreenAccent.copy(alpha = 0.25f), Color.Transparent)
+                        colors = listOf(colors.primaryAccent.copy(alpha = if (isDarkMode) 0.25f else 0.12f), Color.Transparent)
                     ),
                     shape = CircleShape
                 )
         )
 
+        val scrollState = rememberScrollState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .verticalScroll(scrollState)
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            // Top Bar: Theme Toggle + Instagram Profile Quick Button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ThemeToggleButton(
+                    isDark = isDarkMode,
+                    onToggle = onToggleDarkMode,
+                    language = selectedLanguage,
+                    compact = true
+                )
+
+                InstagramFooter(compact = true)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Logo & Title Block
             Column(
@@ -77,75 +103,77 @@ fun WelcomeLanguageScreen(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(90.dp)
+                        .size(80.dp)
                         .clip(CircleShape)
-                        .background(DarkEmeraldCard)
-                        .border(2.dp, NeonGreenAccent, CircleShape),
+                        .background(colors.cardBackgroundOpaque)
+                        .border(2.dp, colors.primaryAccent, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.FitnessCenter,
                         contentDescription = "Midad Logo",
-                        tint = BrightNeonGreen,
-                        modifier = Modifier.size(48.dp)
+                        tint = colors.primaryAccent,
+                        modifier = Modifier.size(42.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 Text(
                     text = "مِداد",
-                    fontSize = 38.sp,
+                    fontSize = 36.sp,
                     fontWeight = FontWeight.Black,
-                    color = BrightNeonGreen,
+                    color = colors.primaryAccent,
                     letterSpacing = 1.sp
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = LanguageManager.welcomeTitle(selectedLanguage),
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimaryWhite,
+                    color = colors.textPrimary,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Text(
                     text = LanguageManager.welcomeSlogan(selectedLanguage),
-                    fontSize = 14.sp,
-                    color = TextSecondaryGray,
+                    fontSize = 13.sp,
+                    color = colors.textSecondary,
                     textAlign = TextAlign.Center,
-                    lineHeight = 20.sp,
+                    lineHeight = 18.sp,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
             // Language Selector Cards
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
                     text = LanguageManager.selectLanguageHeader(selectedLanguage),
-                    fontSize = 15.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextSecondaryGray,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    color = colors.textSecondary,
+                    modifier = Modifier.padding(bottom = 2.dp)
                 )
 
                 AppLanguage.entries.forEach { lang ->
                     val isSelected = selectedLanguage == lang
-                    val borderColor = if (isSelected) BrightNeonGreen else DarkEmeraldCardBorder
-                    val bgColor = if (isSelected) DarkEmeraldCard else DarkEmeraldCard.copy(alpha = 0.5f)
+                    val borderColor = if (isSelected) colors.primaryAccent else colors.cardBorder
+                    val bgColor = if (isSelected) colors.cardBackgroundOpaque else colors.cardBackground
 
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .border(1.5.dp, borderColor, RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(14.dp))
+                            .border(1.5.dp, borderColor, RoundedCornerShape(14.dp))
                             .clickable { onLanguageSelected(lang) }
                             .testTag("lang_card_${lang.code}"),
                         color = bgColor
@@ -153,7 +181,7 @@ fun WelcomeLanguageScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 20.dp, vertical = 16.dp),
+                                .padding(horizontal = 16.dp, vertical = 13.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -161,12 +189,12 @@ fun WelcomeLanguageScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Text(text = lang.flag, fontSize = 24.sp)
+                                Text(text = lang.flag, fontSize = 22.sp)
                                 Text(
                                     text = lang.displayName,
-                                    fontSize = 17.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                    color = TextPrimaryWhite
+                                    color = colors.textPrimary
                                 )
                             }
 
@@ -174,8 +202,8 @@ fun WelcomeLanguageScreen(
                                 Icon(
                                     imageVector = Icons.Default.CheckCircle,
                                     contentDescription = "Selected",
-                                    tint = BrightNeonGreen,
-                                    modifier = Modifier.size(24.dp)
+                                    tint = colors.primaryAccent,
+                                    modifier = Modifier.size(22.dp)
                                 )
                             }
                         }
@@ -183,25 +211,34 @@ fun WelcomeLanguageScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
             // Action Button
             Button(
                 onClick = onStartClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(52.dp)
                     .testTag("start_now_button"),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = NeonGreenAccent,
-                    contentColor = DarkBackground
+                    containerColor = colors.primaryAccent,
+                    contentColor = if (isDarkMode) Color.Black else Color.White
                 ),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
                     text = LanguageManager.btnStartNow(selectedLanguage),
-                    fontSize = 18.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Permanent Instagram Profile Link at Bottom
+            InstagramFooter()
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

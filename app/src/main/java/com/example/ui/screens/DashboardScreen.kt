@@ -37,15 +37,12 @@ import com.example.data.model.NutritionPlan
 import com.example.data.model.UserProfile
 import com.example.data.model.WorkoutPlan
 import com.example.localization.LanguageManager
-import com.example.ui.theme.BrightNeonGreen
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkEmeraldCard
-import com.example.ui.theme.DarkEmeraldCardBorder
-import com.example.ui.theme.DarkSurface
-import com.example.ui.theme.NeonGreenAccent
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimaryWhite
-import com.example.ui.theme.TextSecondaryGray
+import com.example.ui.components.ExerciseTutorialBottomSheet
+import com.example.ui.components.ExerciseTutorialDetail
+import com.example.ui.components.ExerciseTutorialHelper
+import com.example.ui.components.InstagramFooter
+import com.example.ui.components.ThemeToggleButton
+import com.example.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +53,8 @@ fun DashboardScreen(
     workoutPlan: WorkoutPlan?,
     activeTab: Int,
     waterGlasses: Int,
+    isDarkMode: Boolean = true,
+    onToggleDarkMode: () -> Unit = {},
     onTabSelected: (Int) -> Unit,
     onToggleExercise: (dayName: String, exerciseId: String) -> Unit,
     onAddWater: () -> Unit,
@@ -65,7 +64,10 @@ fun DashboardScreen(
     onRefreshPlanClick: () -> Unit
 ) {
     val lang = userProfile.language
+    val colors = AppTheme.colors
+    val context = LocalContext.current
     var showLanguageMenu by remember { mutableStateOf(false) }
+    var activeTutorial by remember { mutableStateOf<ExerciseTutorialDetail?>(null) }
 
     val days = workoutPlan?.days ?: emptyList()
     var selectedDayIndex by remember { mutableIntStateOf(0) }
@@ -81,14 +83,14 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
-                                .background(DarkEmeraldCard)
-                                .border(1.dp, BrightNeonGreen, CircleShape),
+                                .background(colors.cardBackgroundOpaque)
+                                .border(1.dp, colors.primaryAccent, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.FitnessCenter,
                                 contentDescription = "Logo",
-                                tint = BrightNeonGreen,
+                                tint = colors.primaryAccent,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -97,11 +99,27 @@ fun DashboardScreen(
                             text = "مِداد",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Black,
-                            color = BrightNeonGreen
+                            color = colors.primaryAccent
                         )
                     }
                 },
                 actions = {
+                    // Theme Switcher Button
+                    ThemeToggleButton(
+                        isDark = isDarkMode,
+                        onToggle = onToggleDarkMode,
+                        language = lang,
+                        compact = true
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    // Instagram profile quick link badge
+                    InstagramFooter(
+                        compact = true,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+
                     // Language switcher button
                     Box {
                         IconButton(
@@ -114,14 +132,14 @@ fun DashboardScreen(
                         DropdownMenu(
                             expanded = showLanguageMenu,
                             onDismissRequest = { showLanguageMenu = false },
-                            modifier = Modifier.background(DarkEmeraldCard)
+                            modifier = Modifier.background(colors.cardBackgroundOpaque)
                         ) {
                             AppLanguage.entries.forEach { appLang ->
                                 DropdownMenuItem(
                                     text = {
                                         Text(
                                             text = "${appLang.flag}  ${appLang.displayName}",
-                                            color = TextPrimaryWhite
+                                            color = colors.textPrimary
                                         )
                                     },
                                     onClick = {
@@ -141,90 +159,106 @@ fun DashboardScreen(
                         Icon(
                             imageVector = Icons.Default.EditNote,
                             contentDescription = LanguageManager.editProfile(lang),
-                            tint = TextSecondaryGray
+                            tint = colors.textSecondary
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBackground,
-                    titleContentColor = TextPrimaryWhite
+                    containerColor = colors.background,
+                    titleContentColor = colors.textPrimary
                 )
             )
         },
         bottomBar = {
-            NavigationBar(
-                containerColor = DarkSurface,
-                tonalElevation = 8.dp,
-                windowInsets = WindowInsets.navigationBars
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colors.surface),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                NavigationBarItem(
-                    selected = activeTab == 0,
-                    onClick = { onTabSelected(0) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.FitnessCenter,
-                            contentDescription = "Exercises"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = LanguageManager.tabExercises(lang),
-                            fontSize = 13.sp,
-                            fontWeight = if (activeTab == 0) FontWeight.Bold else FontWeight.Normal
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = DarkBackground,
-                        selectedTextColor = BrightNeonGreen,
-                        indicatorColor = BrightNeonGreen,
-                        unselectedIconColor = TextSecondaryGray,
-                        unselectedTextColor = TextSecondaryGray
-                    ),
-                    modifier = Modifier.testTag("tab_exercises")
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    InstagramFooter()
+                }
 
-                NavigationBarItem(
-                    selected = activeTab == 1,
-                    onClick = { onTabSelected(1) },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.RestaurantMenu,
-                            contentDescription = "Nutrition"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = LanguageManager.tabNutrition(lang),
-                            fontSize = 13.sp,
-                            fontWeight = if (activeTab == 1) FontWeight.Bold else FontWeight.Normal
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = DarkBackground,
-                        selectedTextColor = BrightNeonGreen,
-                        indicatorColor = BrightNeonGreen,
-                        unselectedIconColor = TextSecondaryGray,
-                        unselectedTextColor = TextSecondaryGray
-                    ),
-                    modifier = Modifier.testTag("tab_nutrition")
-                )
+                NavigationBar(
+                    containerColor = Color.Transparent,
+                    tonalElevation = 0.dp,
+                    windowInsets = WindowInsets.navigationBars
+                ) {
+                    NavigationBarItem(
+                        selected = activeTab == 0,
+                        onClick = { onTabSelected(0) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.FitnessCenter,
+                                contentDescription = "Exercises"
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = LanguageManager.tabExercises(lang),
+                                fontSize = 13.sp,
+                                fontWeight = if (activeTab == 0) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = if (isDarkMode) Color.Black else Color.White,
+                            selectedTextColor = colors.primaryAccent,
+                            indicatorColor = colors.primaryAccent,
+                            unselectedIconColor = colors.textSecondary,
+                            unselectedTextColor = colors.textSecondary
+                        ),
+                        modifier = Modifier.testTag("tab_exercises")
+                    )
+
+                    NavigationBarItem(
+                        selected = activeTab == 1,
+                        onClick = { onTabSelected(1) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.RestaurantMenu,
+                                contentDescription = "Nutrition"
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = LanguageManager.tabNutrition(lang),
+                                fontSize = 13.sp,
+                                fontWeight = if (activeTab == 1) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = if (isDarkMode) Color.Black else Color.White,
+                            selectedTextColor = colors.primaryAccent,
+                            indicatorColor = colors.primaryAccent,
+                            unselectedIconColor = colors.textSecondary,
+                            unselectedTextColor = colors.textSecondary
+                        ),
+                        modifier = Modifier.testTag("tab_nutrition")
+                    )
+                }
             }
         },
-        containerColor = DarkBackground
+        containerColor = colors.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Summary Banner with Frosted Glass
+            // Summary Banner
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .clip(RoundedCornerShape(22.dp))
-                    .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(22.dp)),
-                color = Color(0x990D2818)
+                    .border(1.dp, colors.cardBorder, RoundedCornerShape(22.dp)),
+                color = colors.cardBackgroundOpaque
             ) {
                 Row(
                     modifier = Modifier
@@ -238,12 +272,12 @@ fun DashboardScreen(
                             text = "TDEE: ${analysisResult?.tdee ?: "--"} kcal | BMI: ${analysisResult?.bmi ?: "--"}",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimaryWhite
+                            color = colors.textPrimary
                         )
                         Text(
                             text = LanguageManager.goalName(userProfile.goal, lang),
                             fontSize = 12.sp,
-                            color = BrightNeonGreen,
+                            color = colors.primaryAccent,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }
@@ -251,9 +285,9 @@ fun DashboardScreen(
                     Surface(
                         modifier = Modifier
                             .clip(RoundedCornerShape(20.dp))
-                            .border(1.dp, BrightNeonGreen.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+                            .border(1.dp, colors.primaryAccent.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
                             .clickable { onRefreshPlanClick() },
-                        color = Color(0x3310B981)
+                        color = colors.primaryAccent.copy(alpha = 0.15f)
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -262,7 +296,7 @@ fun DashboardScreen(
                             Icon(
                                 imageVector = Icons.Default.Refresh,
                                 contentDescription = "Refresh",
-                                tint = BrightNeonGreen,
+                                tint = colors.primaryAccent,
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
@@ -270,7 +304,7 @@ fun DashboardScreen(
                                 text = LanguageManager.refreshPlan(lang),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimaryWhite
+                                color = colors.textPrimary
                             )
                         }
                     }
@@ -292,15 +326,15 @@ fun DashboardScreen(
                             items(days.size) { index ->
                                 val day = days[index]
                                 val isSelected = selectedDayIndex == index
-                                val chipBg = if (isSelected) BrightNeonGreen else DarkEmeraldCard
-                                val chipText = if (isSelected) DarkBackground else TextPrimaryWhite
+                                val chipBg = if (isSelected) colors.primaryAccent else colors.cardBackgroundOpaque
+                                val chipText = if (isSelected) (if (isDarkMode) Color.Black else Color.White) else colors.textPrimary
 
                                 Surface(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(20.dp))
                                         .border(
                                             1.dp,
-                                            if (isSelected) BrightNeonGreen else DarkEmeraldCardBorder,
+                                            if (isSelected) colors.primaryAccent else colors.cardBorder,
                                             RoundedCornerShape(20.dp)
                                         )
                                         .clickable { selectedDayIndex = index }
@@ -332,7 +366,7 @@ fun DashboardScreen(
                                     text = currentDay.title,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = BrightNeonGreen,
+                                    color = colors.primaryAccent,
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 )
                             }
@@ -343,8 +377,8 @@ fun DashboardScreen(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clip(RoundedCornerShape(20.dp))
-                                            .border(1.dp, DarkEmeraldCardBorder, RoundedCornerShape(20.dp)),
-                                        color = DarkEmeraldCard
+                                            .border(1.dp, colors.cardBorder, RoundedCornerShape(20.dp)),
+                                        color = colors.cardBackgroundOpaque
                                     ) {
                                         Column(
                                             modifier = Modifier.padding(24.dp),
@@ -353,7 +387,7 @@ fun DashboardScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Bedtime,
                                                 contentDescription = "Rest Day",
-                                                tint = BrightNeonGreen,
+                                                tint = colors.primaryAccent,
                                                 modifier = Modifier.size(56.dp)
                                             )
                                             Spacer(modifier = Modifier.height(12.dp))
@@ -361,13 +395,13 @@ fun DashboardScreen(
                                                 text = LanguageManager.restDayTitle(lang),
                                                 fontSize = 18.sp,
                                                 fontWeight = FontWeight.Bold,
-                                                color = TextPrimaryWhite
+                                                color = colors.textPrimary
                                             )
                                             Spacer(modifier = Modifier.height(6.dp))
                                             Text(
                                                 text = LanguageManager.restDayDescription(lang),
                                                 fontSize = 13.sp,
-                                                color = TextSecondaryGray,
+                                                color = colors.textSecondary,
                                                 lineHeight = 19.sp
                                             )
                                         }
@@ -379,16 +413,30 @@ fun DashboardScreen(
                                         exercise = exercise,
                                         onToggle = {
                                             onToggleExercise(currentDay.dayName, exercise.id)
+                                        },
+                                        onOpenTutorial = {
+                                            activeTutorial = ExerciseTutorialHelper.getTutorial(
+                                                exerciseName = exercise.name,
+                                                muscleTarget = exercise.muscleTarget,
+                                                setsAndReps = "${exercise.sets} مجموعات × ${exercise.reps} تكرار",
+                                                explicitVideoId = exercise.videoId,
+                                                lang = lang
+                                            )
                                         }
                                     )
                                 }
                             }
 
                             item {
-                                YouTubeGymSection(lang = lang)
+                                YouTubeGymSection(
+                                    lang = lang,
+                                    onSelectExercise = { tutorial ->
+                                        activeTutorial = tutorial
+                                    }
+                                )
                             }
 
-                            item { Spacer(modifier = Modifier.height(24.dp)) }
+                            item { Spacer(modifier = Modifier.height(16.dp)) }
                         }
                     }
                 }
@@ -407,15 +455,15 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(18.dp))
-                                .border(1.dp, NeonGreenAccent.copy(alpha = 0.5f), RoundedCornerShape(18.dp)),
-                            color = DarkEmeraldCard
+                                .border(1.dp, colors.primaryAccent.copy(alpha = 0.4f), RoundedCornerShape(18.dp)),
+                            color = colors.cardBackgroundOpaque
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "🎯 الأهداف الغذائية اليومية",
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = BrightNeonGreen
+                                    color = colors.primaryAccent
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Row(
@@ -436,8 +484,8 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(18.dp))
-                                .border(1.dp, DarkEmeraldCardBorder, RoundedCornerShape(18.dp)),
-                            color = DarkEmeraldCard
+                                .border(1.dp, colors.cardBorder, RoundedCornerShape(18.dp)),
+                            color = colors.cardBackgroundOpaque
                         ) {
                             Row(
                                 modifier = Modifier
@@ -451,12 +499,12 @@ fun DashboardScreen(
                                         text = LanguageManager.waterTrackerTitle(lang),
                                         fontSize = 15.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = TextPrimaryWhite
+                                        color = colors.textPrimary
                                     )
                                     Text(
                                         text = "$waterGlasses / 10 أكواب اليوم",
                                         fontSize = 13.sp,
-                                        color = BrightNeonGreen,
+                                        color = colors.primaryAccent,
                                         modifier = Modifier.padding(top = 2.dp)
                                     )
                                 }
@@ -467,17 +515,17 @@ fun DashboardScreen(
                                         modifier = Modifier
                                             .size(36.dp)
                                             .clip(CircleShape)
-                                            .background(DarkEmeraldCardBorder)
+                                            .background(colors.cardBorder)
                                             .testTag("btn_water_minus")
                                     ) {
-                                        Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus", tint = TextPrimaryWhite)
+                                        Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus", tint = colors.textPrimary)
                                     }
 
                                     Text(
                                         text = "$waterGlasses",
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = TextPrimaryWhite,
+                                        color = colors.textPrimary,
                                         modifier = Modifier.padding(horizontal = 12.dp)
                                     )
 
@@ -486,10 +534,10 @@ fun DashboardScreen(
                                         modifier = Modifier
                                             .size(36.dp)
                                             .clip(CircleShape)
-                                            .background(BrightNeonGreen)
+                                            .background(colors.primaryAccent)
                                             .testTag("btn_water_plus")
                                     ) {
-                                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = DarkBackground)
+                                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = if (isDarkMode) Color.Black else Color.White)
                                     }
                                 }
                             }
@@ -501,7 +549,7 @@ fun DashboardScreen(
                             text = LanguageManager.tunisianIngredientsHeader(lang),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimaryWhite,
+                            color = colors.textPrimary,
                             modifier = Modifier.padding(top = 6.dp)
                         )
                     }
@@ -512,17 +560,30 @@ fun DashboardScreen(
                         MealCard(meal = meal)
                     }
 
-                    item { Spacer(modifier = Modifier.height(24.dp)) }
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
             }
         }
     }
+
+    // In-App YouTube Player & Form Guide BottomSheet
+    activeTutorial?.let { tutorial ->
+        ExerciseTutorialBottomSheet(
+            tutorial = tutorial,
+            lang = lang,
+            onDismiss = { activeTutorial = null }
+        )
+    }
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
+fun ExerciseCard(
+    exercise: Exercise,
+    onToggle: () -> Unit,
+    onOpenTutorial: () -> Unit
+) {
+    val colors = AppTheme.colors
     val isDone = exercise.isCompleted
-    val context = LocalContext.current
 
     Surface(
         modifier = Modifier
@@ -530,12 +591,12 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
             .clip(RoundedCornerShape(20.dp))
             .border(
                 1.dp,
-                if (isDone) BrightNeonGreen.copy(alpha = 0.6f) else Color.White.copy(alpha = 0.08f),
+                if (isDone) colors.primaryAccent.copy(alpha = 0.6f) else colors.cardBorder,
                 RoundedCornerShape(20.dp)
             )
             .clickable { onToggle() }
             .testTag("exercise_card_${exercise.id}"),
-        color = if (isDone) Color(0xCC0D2818) else Color(0x800D2818)
+        color = if (isDone) colors.cardBackgroundOpaque else colors.cardBackground
     ) {
         Row(
             modifier = Modifier
@@ -552,9 +613,9 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
                     checked = isDone,
                     onCheckedChange = { onToggle() },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = BrightNeonGreen,
-                        checkmarkColor = DarkBackground,
-                        uncheckedColor = TextSecondaryGray
+                        checkedColor = colors.primaryAccent,
+                        checkmarkColor = colors.background,
+                        uncheckedColor = colors.textSecondary
                     )
                 )
 
@@ -565,7 +626,7 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
                         text = exercise.name,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isDone) TextSecondaryGray else TextPrimaryWhite,
+                        color = if (isDone) colors.textSecondary else colors.textPrimary,
                         textDecoration = if (isDone) TextDecoration.LineThrough else TextDecoration.None
                     )
 
@@ -574,7 +635,7 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
                     Text(
                         text = "${exercise.muscleTarget} • ${exercise.sets} مجموعات × ${exercise.reps} تكرار",
                         fontSize = 11.sp,
-                        color = if (isDone) TextMuted else BrightNeonGreen
+                        color = if (isDone) colors.textSecondary else colors.primaryAccent
                     )
                 }
             }
@@ -584,12 +645,9 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
             Surface(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .clickable {
-                        val searchUri = Uri.parse("https://www.youtube.com/results?search_query=" + Uri.encode("${exercise.name} gym tutorial"))
-                        val intent = Intent(Intent.ACTION_VIEW, searchUri)
-                        context.startActivity(intent)
-                    },
-                color = Color(0x40FF0000)
+                    .clickable { onOpenTutorial() }
+                    .testTag("exercise_tutorial_btn_${exercise.id}"),
+                color = Color(0x25FF0000)
             ) {
                 Row(
                     modifier = Modifier
@@ -608,7 +666,7 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
                         text = "YouTube",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFF6666)
+                        color = Color(0xFFFF4444)
                     )
                 }
             }
@@ -619,20 +677,22 @@ fun ExerciseCard(exercise: Exercise, onToggle: () -> Unit) {
 data class YouTubeGymExercise(
     val title: String,
     val subtitle: String,
-    val searchQuery: String
+    val videoId: String
 )
 
 @Composable
-fun YouTubeGymSection(lang: AppLanguage) {
-    val context = LocalContext.current
-
+fun YouTubeGymSection(
+    lang: AppLanguage,
+    onSelectExercise: (ExerciseTutorialDetail) -> Unit
+) {
+    val colors = AppTheme.colors
     val youtubeExercises = listOf(
-        YouTubeGymExercise("🏋️ Bench Press (بنش بريس)", "شرح الأداء الصحيح للصدر الأوسط والأسفل", "bench press gym exercise tutorial form"),
-        YouTubeGymExercise("🦵 Barbell Squats (السكوات)", "طريقة أداء السكوات بالبار وحماية الركبتين", "barbell squat tutorial form gym"),
-        YouTubeGymExercise("🏋️‍♂️ Deadlift (الرفعة المميتة)", "شرح طريقة الديدلفت للظهر والظهر السفلي", "deadlift tutorial form gym"),
-        YouTubeGymExercise("💪 Lat Pulldown (سحب الظهر)", "تمرين استهداف الظهر العريض بأمان", "lat pulldown tutorial gym form"),
-        YouTubeGymExercise("🎯 Overhead Shoulder Press", "شرح تمرين ضغط الأكتاف بالبار أو الدامبلز", "dumbbell shoulder press tutorial gym"),
-        YouTubeGymExercise("⚡ Biceps & Triceps Workout", "تمارين تضخيم عضلات البايسبس والترايسبس", "biceps triceps workout gym tutorial")
+        YouTubeGymExercise("🏋️ Bench Press (بنش بريس)", "شرح الأداء الصحيح للصدر الأوسط والأسفل", "rT7DGvm-3yy"),
+        YouTubeGymExercise("🦵 Barbell Squats (السكوات)", "طريقة أداء السكوات بالبار وحماية الركبتين", "ultWZbUMPL8"),
+        YouTubeGymExercise("🏋️‍♂️ Deadlift (الرفعة المميتة)", "شرح طريقة الديدلفت للظهر والظهر السفلي", "op9kVnSso6Q"),
+        YouTubeGymExercise("💪 Lat Pulldown (سحب الظهر)", "تمرين استهداف الظهر العريض بأمان", "CAwf7n6Luuc"),
+        YouTubeGymExercise("🎯 Overhead Shoulder Press", "شرح تمرين ضغط الأكتاف بالبار أو الدامبلز", "qEwKCR5JCog"),
+        YouTubeGymExercise("⚡ Biceps & Triceps Workout", "تمارين تضخيم عضلات البايسبس والترايسبس", "ykJmrZ5v0Oo")
     )
 
     Column(
@@ -655,7 +715,7 @@ fun YouTubeGymSection(lang: AppLanguage) {
                 text = LanguageManager.youtubeSuggestionsTitle(lang),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimaryWhite
+                color = colors.textPrimary
             )
         }
 
@@ -668,15 +728,19 @@ fun YouTubeGymSection(lang: AppLanguage) {
                     modifier = Modifier
                         .width(220.dp)
                         .clip(RoundedCornerShape(18.dp))
-                        .border(1.dp, Color(0xFFFF3333).copy(alpha = 0.3f), RoundedCornerShape(18.dp))
+                        .border(1.dp, Color(0xFFFF3333).copy(alpha = 0.35f), RoundedCornerShape(18.dp))
                         .clickable {
-                            val intent = Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://www.youtube.com/results?search_query=" + Uri.encode(item.searchQuery))
+                            onSelectExercise(
+                                ExerciseTutorialHelper.getTutorial(
+                                    exerciseName = item.title,
+                                    muscleTarget = item.subtitle,
+                                    setsAndReps = "",
+                                    explicitVideoId = item.videoId,
+                                    lang = lang
+                                )
                             )
-                            context.startActivity(intent)
                         },
-                    color = Color(0x661A0000)
+                    color = colors.cardBackgroundOpaque
                 ) {
                     Column(
                         modifier = Modifier.padding(14.dp)
@@ -690,7 +754,7 @@ fun YouTubeGymSection(lang: AppLanguage) {
                                 text = item.title,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimaryWhite,
+                                color = colors.textPrimary,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
@@ -708,7 +772,7 @@ fun YouTubeGymSection(lang: AppLanguage) {
                         Text(
                             text = item.subtitle,
                             fontSize = 11.sp,
-                            color = TextSecondaryGray,
+                            color = colors.textSecondary,
                             maxLines = 2,
                             lineHeight = 15.sp,
                             overflow = TextOverflow.Ellipsis
@@ -722,7 +786,7 @@ fun YouTubeGymSection(lang: AppLanguage) {
                             Icon(
                                 imageVector = Icons.Default.SmartDisplay,
                                 contentDescription = null,
-                                tint = Color(0xFFFF6666),
+                                tint = Color(0xFFFF4444),
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -730,7 +794,7 @@ fun YouTubeGymSection(lang: AppLanguage) {
                                 text = LanguageManager.youtubeWatchBtn(lang),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFF6666)
+                                color = Color(0xFFFF4444)
                             )
                         }
                     }
@@ -742,12 +806,13 @@ fun YouTubeGymSection(lang: AppLanguage) {
 
 @Composable
 fun MealCard(meal: Meal) {
+    val colors = AppTheme.colors
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .border(1.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(22.dp)),
-        color = Color(0x800D2818)
+            .border(1.dp, colors.cardBorder, RoundedCornerShape(22.dp)),
+        color = colors.cardBackgroundOpaque
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -759,14 +824,14 @@ fun MealCard(meal: Meal) {
                     text = meal.title,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = BrightNeonGreen
+                    color = colors.primaryAccent
                 )
 
                 Text(
                     text = "${meal.totalCalories} kcal",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimaryWhite
+                    color = colors.textPrimary
                 )
             }
 
@@ -782,13 +847,13 @@ fun MealCard(meal: Meal) {
                     Text(
                         text = "• ${ing.name}",
                         fontSize = 13.sp,
-                        color = TextPrimaryWhite,
+                        color = colors.textPrimary,
                         modifier = Modifier.weight(1f)
                     )
                     Text(
                         text = ing.gramsOrQty,
                         fontSize = 12.sp,
-                        color = TextSecondaryGray,
+                        color = colors.textSecondary,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -800,8 +865,9 @@ fun MealCard(meal: Meal) {
 
 @Composable
 fun MacroBadge(title: String, amount: String) {
+    val colors = AppTheme.colors
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = title, fontSize = 11.sp, color = TextSecondaryGray)
-        Text(text = amount, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = TextPrimaryWhite)
+        Text(text = title, fontSize = 11.sp, color = colors.textSecondary)
+        Text(text = amount, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = colors.textPrimary)
     }
 }

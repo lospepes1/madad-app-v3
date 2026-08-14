@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,39 +30,50 @@ import com.example.data.model.AppLanguage
 import com.example.data.model.Gender
 import com.example.data.model.UserProfile
 import com.example.localization.LanguageManager
-import com.example.ui.theme.BrightNeonGreen
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkEmeraldCard
-import com.example.ui.theme.DarkEmeraldCardBorder
-import com.example.ui.theme.NeonGreenAccent
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimaryWhite
-import com.example.ui.theme.TextSecondaryGray
+import com.example.ui.components.InstagramFooter
+import com.example.ui.components.ThemeToggleButton
+import com.example.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataScreen(
     userProfile: UserProfile,
+    isDarkMode: Boolean = true,
+    onToggleDarkMode: () -> Unit = {},
     onSavePersonalData: (Gender, Int, Float, Float) -> Unit,
     onNextClick: () -> Unit
 ) {
     val lang = userProfile.language
+    val colors = AppTheme.colors
 
-    var selectedGender by remember { mutableStateOf(userProfile.gender) }
-    var ageText by remember { mutableStateOf(if (userProfile.age > 0) userProfile.age.toString() else "25") }
-    var heightText by remember { mutableStateOf(if (userProfile.heightCm > 0) userProfile.heightCm.toInt().toString() else "175") }
-    var weightText by remember { mutableStateOf(if (userProfile.weightKg > 0) userProfile.weightKg.toInt().toString() else "75") }
+    var selectedGender by remember {
+        mutableStateOf<Gender?>(if (userProfile.age > 0) userProfile.gender else null)
+    }
+    var ageText by remember {
+        mutableStateOf(if (userProfile.age > 0) userProfile.age.toString() else "")
+    }
+    var heightText by remember {
+        mutableStateOf(if (userProfile.heightCm > 0) userProfile.heightCm.toInt().toString() else "")
+    }
+    var weightText by remember {
+        mutableStateOf(if (userProfile.weightKg > 0) userProfile.weightKg.toInt().toString() else "")
+    }
 
     val ageVal = ageText.toIntOrNull() ?: 0
     val heightVal = heightText.toFloatOrNull() ?: 0f
     val weightVal = weightText.toFloatOrNull() ?: 0f
 
-    val isFormComplete = ageVal in 10..120 && heightVal in 100f..250f && weightVal in 30f..300f
+    val isGenderSelected = selectedGender != null
+    val isAgeValid = ageVal in 10..120
+    val isHeightValid = heightVal in 100f..250f
+    val isWeightValid = weightVal in 30f..300f
+
+    val isFormComplete = isGenderSelected && isAgeValid && isHeightValid && isWeightValid
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(20.dp)
             .testTag("personal_data_screen")
     ) {
@@ -72,28 +84,46 @@ fun PersonalDataScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                Spacer(modifier = Modifier.height(16.dp))
+                // Top Bar: Theme Toggle + Instagram Profile Quick Button
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ThemeToggleButton(
+                        isDark = isDarkMode,
+                        onToggle = onToggleDarkMode,
+                        language = lang,
+                        compact = true
+                    )
+
+                    InstagramFooter(compact = true)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = LanguageManager.personalDataTitle(lang),
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
-                    color = BrightNeonGreen
+                    color = colors.primaryAccent
                 )
 
                 Text(
-                    text = "خطوة 1 من 3 - أدخل بياناتك بدقة لحساب السعرات",
+                    text = "خطوة 1 من 3 - جميع الحقول إجبارية لحساب السعرات والتمارين بدقة",
                     fontSize = 13.sp,
-                    color = TextSecondaryGray,
+                    color = colors.textSecondary,
                     modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
                 )
 
                 // Gender Selection
                 Text(
-                    text = LanguageManager.genderLabel(lang),
+                    text = LanguageManager.genderRequiredLabel(lang),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimaryWhite,
+                    color = colors.textPrimary,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
@@ -109,12 +139,12 @@ fun PersonalDataScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .border(
                                 1.5.dp,
-                                if (isMale) BrightNeonGreen else DarkEmeraldCardBorder,
+                                if (isMale) colors.primaryAccent else colors.cardBorder,
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable { selectedGender = Gender.MALE }
                             .testTag("gender_male"),
-                        color = if (isMale) DarkEmeraldCard else DarkEmeraldCard.copy(alpha = 0.4f)
+                        color = if (isMale) colors.cardBackgroundOpaque else colors.cardBackground
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -123,14 +153,14 @@ fun PersonalDataScreen(
                             Icon(
                                 imageVector = Icons.Default.Male,
                                 contentDescription = "Male",
-                                tint = if (isMale) BrightNeonGreen else TextSecondaryGray
+                                tint = if (isMale) colors.primaryAccent else colors.textSecondary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = LanguageManager.maleLabel(lang),
                                 fontSize = 16.sp,
                                 fontWeight = if (isMale) FontWeight.Bold else FontWeight.Normal,
-                                color = TextPrimaryWhite
+                                color = colors.textPrimary
                             )
                         }
                     }
@@ -143,12 +173,12 @@ fun PersonalDataScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .border(
                                 1.5.dp,
-                                if (isFemale) BrightNeonGreen else DarkEmeraldCardBorder,
+                                if (isFemale) colors.primaryAccent else colors.cardBorder,
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable { selectedGender = Gender.FEMALE }
                             .testTag("gender_female"),
-                        color = if (isFemale) DarkEmeraldCard else DarkEmeraldCard.copy(alpha = 0.4f)
+                        color = if (isFemale) colors.cardBackgroundOpaque else colors.cardBackground
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -157,14 +187,14 @@ fun PersonalDataScreen(
                             Icon(
                                 imageVector = Icons.Default.Female,
                                 contentDescription = "Female",
-                                tint = if (isFemale) BrightNeonGreen else TextSecondaryGray
+                                tint = if (isFemale) colors.primaryAccent else colors.textSecondary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = LanguageManager.femaleLabel(lang),
                                 fontSize = 16.sp,
                                 fontWeight = if (isFemale) FontWeight.Bold else FontWeight.Normal,
-                                color = TextPrimaryWhite
+                                color = colors.textPrimary
                             )
                         }
                     }
@@ -177,28 +207,35 @@ fun PersonalDataScreen(
                     text = LanguageManager.ageLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimaryWhite,
+                    color = colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = ageText,
                     onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) ageText = it },
+                    placeholder = {
+                        Text(
+                            text = LanguageManager.agePlaceholder(lang),
+                            color = colors.textMuted,
+                            fontSize = 14.sp
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_age"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = DarkEmeraldCard,
-                        unfocusedContainerColor = DarkEmeraldCard.copy(alpha = 0.5f),
-                        focusedBorderColor = BrightNeonGreen,
-                        unfocusedBorderColor = DarkEmeraldCardBorder,
-                        focusedTextColor = TextPrimaryWhite,
-                        unfocusedTextColor = TextPrimaryWhite
+                        focusedContainerColor = colors.cardBackgroundOpaque,
+                        unfocusedContainerColor = colors.cardBackground,
+                        focusedBorderColor = colors.primaryAccent,
+                        unfocusedBorderColor = colors.cardBorder,
+                        focusedTextColor = colors.textPrimary,
+                        unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = BrightNeonGreen)
+                        Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = colors.primaryAccent)
                     },
                     singleLine = true
                 )
@@ -210,28 +247,35 @@ fun PersonalDataScreen(
                     text = LanguageManager.heightLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimaryWhite,
+                    color = colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = heightText,
                     onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) heightText = it },
+                    placeholder = {
+                        Text(
+                            text = LanguageManager.heightPlaceholder(lang),
+                            color = colors.textMuted,
+                            fontSize = 14.sp
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_height"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = DarkEmeraldCard,
-                        unfocusedContainerColor = DarkEmeraldCard.copy(alpha = 0.5f),
-                        focusedBorderColor = BrightNeonGreen,
-                        unfocusedBorderColor = DarkEmeraldCardBorder,
-                        focusedTextColor = TextPrimaryWhite,
-                        unfocusedTextColor = TextPrimaryWhite
+                        focusedContainerColor = colors.cardBackgroundOpaque,
+                        unfocusedContainerColor = colors.cardBackground,
+                        focusedBorderColor = colors.primaryAccent,
+                        unfocusedBorderColor = colors.cardBorder,
+                        focusedTextColor = colors.textPrimary,
+                        unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Height, contentDescription = null, tint = BrightNeonGreen)
+                        Icon(imageVector = Icons.Default.Height, contentDescription = null, tint = colors.primaryAccent)
                     },
                     singleLine = true
                 )
@@ -243,28 +287,35 @@ fun PersonalDataScreen(
                     text = LanguageManager.weightLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimaryWhite,
+                    color = colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = weightText,
                     onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) weightText = it },
+                    placeholder = {
+                        Text(
+                            text = LanguageManager.weightPlaceholder(lang),
+                            color = colors.textMuted,
+                            fontSize = 14.sp
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_weight"),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = DarkEmeraldCard,
-                        unfocusedContainerColor = DarkEmeraldCard.copy(alpha = 0.5f),
-                        focusedBorderColor = BrightNeonGreen,
-                        unfocusedBorderColor = DarkEmeraldCardBorder,
-                        focusedTextColor = TextPrimaryWhite,
-                        unfocusedTextColor = TextPrimaryWhite
+                        focusedContainerColor = colors.cardBackgroundOpaque,
+                        unfocusedContainerColor = colors.cardBackground,
+                        focusedBorderColor = colors.primaryAccent,
+                        unfocusedBorderColor = colors.cardBorder,
+                        focusedTextColor = colors.textPrimary,
+                        unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.MonitorWeight, contentDescription = null, tint = BrightNeonGreen)
+                        Icon(imageVector = Icons.Default.MonitorWeight, contentDescription = null, tint = colors.primaryAccent)
                     },
                     singleLine = true
                 )
@@ -273,8 +324,8 @@ fun PersonalDataScreen(
                     Text(
                         text = LanguageManager.fillAllDataNotice(lang),
                         fontSize = 13.sp,
-                        color = TextMuted,
-                        modifier = Modifier.padding(top = 12.dp)
+                        color = colors.textMuted,
+                        modifier = Modifier.padding(top = 14.dp)
                     )
                 }
             }
@@ -283,8 +334,8 @@ fun PersonalDataScreen(
 
             Button(
                 onClick = {
-                    if (isFormComplete) {
-                        onSavePersonalData(selectedGender, ageVal, heightVal, weightVal)
+                    if (isFormComplete && selectedGender != null) {
+                        onSavePersonalData(selectedGender!!, ageVal, heightVal, weightVal)
                         onNextClick()
                     }
                 },
@@ -294,10 +345,10 @@ fun PersonalDataScreen(
                     .height(56.dp)
                     .testTag("personal_data_next_button"),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = NeonGreenAccent,
-                    contentColor = DarkBackground,
-                    disabledContainerColor = DarkEmeraldCardBorder,
-                    disabledContentColor = TextMuted
+                    containerColor = colors.primaryAccent,
+                    contentColor = if (isDarkMode) Color.Black else Color.White,
+                    disabledContainerColor = colors.cardBorder,
+                    disabledContentColor = colors.textMuted
                 ),
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -307,6 +358,11 @@ fun PersonalDataScreen(
                     fontWeight = FontWeight.Bold
                 )
             }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Permanent Instagram Profile Link
+            InstagramFooter()
         }
     }
 }

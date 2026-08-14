@@ -26,12 +26,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MidadTheme {
+            val viewModel: MidadViewModel = viewModel()
+            val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+            MidadTheme(darkTheme = isDarkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MidadMainApp()
+                    MidadMainApp(viewModel = viewModel)
                 }
             }
         }
@@ -48,11 +50,14 @@ fun MidadMainApp(viewModel: MidadViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val waterGlasses by viewModel.waterGlasses.collectAsStateWithLifecycle()
     val dashboardTab by viewModel.dashboardTab.collectAsStateWithLifecycle()
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
 
     when (currentScreen) {
         Screen.WELCOME_LANGUAGE -> {
             WelcomeLanguageScreen(
                 selectedLanguage = userProfile.language,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onLanguageSelected = { viewModel.setLanguage(it) },
                 onStartClick = { viewModel.navigateTo(Screen.PERSONAL_DATA) }
             )
@@ -61,6 +66,8 @@ fun MidadMainApp(viewModel: MidadViewModel = viewModel()) {
         Screen.PERSONAL_DATA -> {
             PersonalDataScreen(
                 userProfile = userProfile,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onSavePersonalData = { gender, age, height, weight ->
                     viewModel.updatePersonalData(gender, age, height, weight)
                 },
@@ -71,6 +78,8 @@ fun MidadMainApp(viewModel: MidadViewModel = viewModel()) {
         Screen.GOAL_LIFESTYLE -> {
             GoalLifestyleScreen(
                 userProfile = userProfile,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onSaveGoalAndLifestyle = { goal, activity ->
                     viewModel.updateGoalAndLifestyle(goal, activity)
                 },
@@ -86,6 +95,8 @@ fun MidadMainApp(viewModel: MidadViewModel = viewModel()) {
                 userProfile = userProfile,
                 analysisResult = analysisResult,
                 isLoading = isLoading,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onGymLevelSelected = { viewModel.updateGymLevel(it) },
                 onCreatePlanClick = { viewModel.generateFullPlanAndGoDashboard() }
             )
@@ -99,6 +110,8 @@ fun MidadMainApp(viewModel: MidadViewModel = viewModel()) {
                 workoutPlan = workoutPlan,
                 activeTab = dashboardTab,
                 waterGlasses = waterGlasses,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onTabSelected = { viewModel.setDashboardTab(it) },
                 onToggleExercise = { day, exId -> viewModel.toggleExerciseCompletion(day, exId) },
                 onAddWater = { viewModel.incrementWater() },

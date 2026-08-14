@@ -22,6 +22,13 @@ class UserPreferencesManager(context: Context) {
         private const val KEY_NUTRITION_PLAN = "key_nutrition_plan"
         private const val KEY_WORKOUT_PLAN = "key_workout_plan"
         private const val KEY_WATER_GLASSES = "key_water_glasses"
+        private const val KEY_DARK_MODE = "key_dark_mode"
+    }
+
+    fun isDarkMode(): Boolean = prefs.getBoolean(KEY_DARK_MODE, true)
+
+    fun saveDarkMode(isDark: Boolean) {
+        prefs.edit().putBoolean(KEY_DARK_MODE, isDark).apply()
     }
 
     fun saveLanguage(language: AppLanguage) {

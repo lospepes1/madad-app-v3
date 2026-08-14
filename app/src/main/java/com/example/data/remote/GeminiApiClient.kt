@@ -526,11 +526,11 @@ class GeminiApiClient {
                     title = "تمرين شامل للجسم كله (Full Body 1)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Squat (سكوات بالبار)", "الأفخاذ والأرداف", 3, "10-12"),
-                        Exercise("ex2", "Bench Press (بنش بريس الصدر)", "الصدر الأوسط", 3, "10-12"),
-                        Exercise("ex3", "Lat Pulldown (سحب ظهر)", "الظهر العريض", 3, "10-12"),
-                        Exercise("ex4", "Dumbbell Press Shoulders", "الأكتاف", 3, "12"),
-                        Exercise("ex5", "Plank Core (تمارين المعدة)", "المعدة والبطن", 3, "45 sec")
+                        Exercise("ex1", "Barbell Squat (سكوات بالبار)", "الأفخاذ والأرداف", 3, "10-12", videoId = "ultWZbUMPL8"),
+                        Exercise("ex2", "Bench Press (بنش بريس الصدر)", "الصدر الأوسط", 3, "10-12", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex3", "Lat Pulldown (سحب ظهر)", "الظهر العريض", 3, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex4", "Dumbbell Press Shoulders", "الأكتاف", 3, "12", videoId = "qEwKCR5JCog"),
+                        Exercise("ex5", "Plank Core (تمارين المعدة)", "المعدة والبطن", 3, "45 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
                 DayWorkout("الثلاثاء", "يوم راحة واسترخاء", true, emptyList()),
@@ -539,11 +539,11 @@ class GeminiApiClient {
                     title = "تمرين شامل للجسم كله (Full Body 2)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Romanian Deadlift (ديلفت روماني)", "الخلفيات والأرداف", 3, "10"),
-                        Exercise("ex7", "Incline Dumbbell Press", "الصدر العلوي", 3, "10-12"),
-                        Exercise("ex8", "Seated Cable Row (تجديف للظهر)", "منتصف الظهر", 3, "12"),
-                        Exercise("ex9", "Biceps Cable Curl", "البايسبس", 3, "12-15"),
-                        Exercise("ex10", "Triceps Rope Extension", "الترايسبس", 3, "12-15")
+                        Exercise("ex6", "Romanian Deadlift (ديلفت روماني)", "الخلفيات والأرداف", 3, "10", videoId = "op9kVnSso6Q"),
+                        Exercise("ex7", "Incline Dumbbell Press", "الصدر العلوي", 3, "10-12", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex8", "Seated Cable Row (تجديف للظهر)", "منتصف الظهر", 3, "12", videoId = "G8l_8chR5BE"),
+                        Exercise("ex9", "Biceps Cable Curl", "البايسبس", 3, "12-15", videoId = "ykJmrZ5v0Oo"),
+                        Exercise("ex10", "Triceps Rope Extension", "الترايسبس", 3, "12-15", videoId = "2-LAMcpzODU")
                     )
                 ),
                 DayWorkout("الخميس", "يوم راحة واسترخاء", true, emptyList()),
@@ -552,10 +552,10 @@ class GeminiApiClient {
                     title = "تمرين شامل للجسم كله (Full Body 3)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex11", "Leg Press Machine", "الأفخاذ والأرجل", 3, "12"),
-                        Exercise("ex12", "Dumbbell Flyes", "عضلات الصدر", 3, "12"),
-                        Exercise("ex13", "Dumbbell Lateral Raises", "الكتف الجانبي", 4, "15"),
-                        Exercise("ex14", "Calf Raises (عضلة الساق)", "الساقين", 4, "15-20")
+                        Exercise("ex11", "Leg Press Machine", "الأفخاذ والأرجل", 3, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex12", "Dumbbell Flyes", "عضلات الصدر", 3, "12", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex13", "Dumbbell Lateral Raises", "الكتف الجانبي", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex14", "Plank Core Hold", "الجذع والبطن", 3, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
                 DayWorkout("السبت", "يوم راحة واسترخاء", true, emptyList()),
@@ -568,11 +568,11 @@ class GeminiApiClient {
                     title = "الجزء العلوي من الجسم (Upper Body A)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Bench Press", "الصدر", 4, "8-10"),
-                        Exercise("ex2", "Bent Over Barbell Row", "الظهر", 4, "8-10"),
-                        Exercise("ex3", "Overhead Dumbbell Press", "الأكتاف", 3, "10-12"),
-                        Exercise("ex4", "Incline Dumbbell Curl", "البايسبس", 3, "12"),
-                        Exercise("ex5", "Skullcrusher Triceps", "الترايسبس", 3, "12")
+                        Exercise("ex1", "Barbell Bench Press", "الصدر", 4, "8-10", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex2", "Bent Over Barbell Row", "الظهر", 4, "8-10", videoId = "G8l_8chR5BE"),
+                        Exercise("ex3", "Overhead Dumbbell Press", "الأكتاف", 3, "10-12", videoId = "qEwKCR5JCog"),
+                        Exercise("ex4", "Incline Dumbbell Curl", "البايسبس", 3, "12", videoId = "ykJmrZ5v0Oo"),
+                        Exercise("ex5", "Triceps Rope Pushdown", "الترايسبس", 3, "12", videoId = "2-LAMcpzODU")
                     )
                 ),
                 DayWorkout(
@@ -580,10 +580,10 @@ class GeminiApiClient {
                     title = "الجزء السفلي والبطن (Lower Body A)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Barbell Back Squat", "الأفخاذ", 4, "8-10"),
-                        Exercise("ex7", "Leg Curl Machine", "خلفيات الأرجل", 4, "12"),
-                        Exercise("ex8", "Walking Lunges", "الأفخاذ والأرداف", 3, "12 لكل رجل"),
-                        Exercise("ex9", "Hanging Leg Raises", "عضلات البطن", 3, "15")
+                        Exercise("ex6", "Barbell Back Squat", "الأفخاذ", 4, "8-10", videoId = "ultWZbUMPL8"),
+                        Exercise("ex7", "Leg Press Machine", "الأفخاذ والأرجل", 4, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex8", "Romanian Deadlift", "الأفخاذ والأرداف", 3, "10-12", videoId = "op9kVnSso6Q"),
+                        Exercise("ex9", "Plank Core Hold", "عضلات البطن والجذع", 3, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
                 DayWorkout("الأربعاء", "يوم راحة واسترخاء", true, emptyList()),
@@ -592,10 +592,10 @@ class GeminiApiClient {
                     title = "الجزء العلوي من الجسم (Upper Body B)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex10", "Incline Barbell Bench Press", "الصدر العلوي", 4, "8-10"),
-                        Exercise("ex11", "Lat Pulldown Wide Grip", "الظهر العريض", 4, "10-12"),
-                        Exercise("ex12", "Lateral Raises (رفرفة أكتاف)", "الكتف الجانبي", 4, "15"),
-                        Exercise("ex13", "Hammer Curls", "البايسبس والساعد", 3, "12")
+                        Exercise("ex10", "Incline Barbell Bench Press", "الصدر العلوي", 4, "8-10", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex11", "Lat Pulldown Wide Grip", "الظهر العريض", 4, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex12", "Lateral Raises (رفرفة أكتاف)", "الكتف الجانبي", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex13", "Biceps Barbell Curl", "البايسبس والساعد", 3, "12", videoId = "ykJmrZ5v0Oo")
                     )
                 ),
                 DayWorkout(
@@ -603,9 +603,9 @@ class GeminiApiClient {
                     title = "الجزء السفلي والبطن (Lower Body B)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex14", "Deadlift (الرفعة المميتة)", "الظهر السفلي والأرجل", 4, "6-8"),
-                        Exercise("ex15", "Leg Extension Machine", "الأفخاذ الأمامية", 3, "12-15"),
-                        Exercise("ex16", "Standing Calf Raises", "الساقين", 4, "15-20")
+                        Exercise("ex14", "Deadlift (الرفعة المميتة)", "الظهر السفلي والأرجل", 4, "6-8", videoId = "op9kVnSso6Q"),
+                        Exercise("ex15", "Barbell Squats", "الأفخاذ الأمامية", 3, "10-12", videoId = "ultWZbUMPL8"),
+                        Exercise("ex16", "Plank Core Exercise", "الجذع والبطن", 4, "45 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
                 DayWorkout("السبت", "يوم راحة واسترخاء", true, emptyList()),
@@ -618,11 +618,11 @@ class GeminiApiClient {
                     title = "يوم الدفع (Push Day - الصدر والأكتاف والتراي)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Bench Press", "الصدر الرئيسي", 4, "6-8"),
-                        Exercise("ex2", "Incline Dumbbell Press", "الصدر العلوي", 4, "8-10"),
-                        Exercise("ex3", "Military Standing Press", "الأكتاف الأمامية", 4, "8-10"),
-                        Exercise("ex4", "Cable Lateral Raises", "الأكتاف الجانبية", 4, "15"),
-                        Exercise("ex5", "Triceps Dips / Cable Pushdown", "الترايسبس", 4, "10-12")
+                        Exercise("ex1", "Barbell Bench Press", "الصدر الرئيسي", 4, "6-8", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex2", "Incline Dumbbell Press", "الصدر العلوي", 4, "8-10", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex3", "Dumbbell Press Shoulders", "الأكتاف الأمامية", 4, "8-10", videoId = "qEwKCR5JCog"),
+                        Exercise("ex4", "Lateral Raises", "الأكتاف الجانبية", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex5", "Triceps Rope Pushdown", "الترايسبس", 4, "10-12", videoId = "2-LAMcpzODU")
                     )
                 ),
                 DayWorkout(
@@ -630,10 +630,10 @@ class GeminiApiClient {
                     title = "يوم السحب (Pull Day - الظهر والبايسبس)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Deadlift or T-Bar Row", "الظهر الكامل", 4, "6-8"),
-                        Exercise("ex7", "Wide Grip Lat Pulldown", "الظهر العريض", 4, "10-12"),
-                        Exercise("ex8", "Face Pulls", "الأكتاف الخلفية", 4, "15"),
-                        Exercise("ex9", "Barbell Biceps Curl", "البايسبس", 4, "10-12")
+                        Exercise("ex6", "Deadlift (الرفعة المميتة)", "الظهر الكامل", 4, "6-8", videoId = "op9kVnSso6Q"),
+                        Exercise("ex7", "Wide Grip Lat Pulldown", "الظهر العريض", 4, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex8", "Barbell Bent Over Row", "منتصف الظهر", 4, "8-10", videoId = "G8l_8chR5BE"),
+                        Exercise("ex9", "Barbell Biceps Curl", "البايسبس", 4, "10-12", videoId = "ykJmrZ5v0Oo")
                     )
                 ),
                 DayWorkout(
@@ -641,10 +641,10 @@ class GeminiApiClient {
                     title = "يوم الأرجل (Legs Day - الأرجل والمعدة)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex10", "Barbell Squat", "الأفخاذ الأمامية", 4, "6-8"),
-                        Exercise("ex11", "Romanian Deadlift", "خلفيات الأرجل", 4, "8-10"),
-                        Exercise("ex12", "Leg Press Machine", "الأرجل", 3, "12"),
-                        Exercise("ex13", "Standing & Seated Calf Raises", "عضلات الساق", 5, "15-20")
+                        Exercise("ex10", "Barbell Squat (السكوات)", "الأفخاذ الأمامية", 4, "6-8", videoId = "ultWZbUMPL8"),
+                        Exercise("ex11", "Romanian Deadlift", "خلفيات الأرجل", 4, "8-10", videoId = "op9kVnSso6Q"),
+                        Exercise("ex12", "Leg Press Machine", "الأرجل", 3, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex13", "Plank Core Stability", "عضلات البطن والجذع", 4, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
                 DayWorkout("الخميس", "يوم راحة واسترخاء", true, emptyList()),

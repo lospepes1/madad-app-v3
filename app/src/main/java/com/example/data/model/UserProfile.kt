@@ -29,9 +29,9 @@ enum class GymLevel {
 data class UserProfile(
     val language: AppLanguage = AppLanguage.AR,
     val gender: Gender = Gender.MALE,
-    val age: Int = 25,
-    val heightCm: Float = 175f,
-    val weightKg: Float = 75f,
+    val age: Int = 0,
+    val heightCm: Float = 0f,
+    val weightKg: Float = 0f,
     val goal: Goal = Goal.CUTTING,
     val activityLevel: ActivityLevel = ActivityLevel.MODERATE,
     val gymLevel: GymLevel = GymLevel.BEGINNER,
@@ -75,7 +75,8 @@ data class Exercise(
     val muscleTarget: String,
     val sets: Int,
     val reps: String,
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    val videoId: String = ""
 )
 
 data class DayWorkout(
