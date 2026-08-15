@@ -153,7 +153,7 @@ fun AnalysisGymLevelScreen(
                     )
 
                     Text(
-                        text = "خطوة 3 من 3 - نتائج تحليلك من الذكاء الاصطناعي واختيار جدول التمارين",
+                        text = LanguageManager.step3Subtitle(lang),
                         fontSize = 13.sp,
                         color = colors.textSecondary,
                         modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)

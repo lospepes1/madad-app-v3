@@ -6,6 +6,12 @@ import com.example.data.model.Gender
 import com.example.data.model.GymLevel
 import com.example.data.model.Goal
 
+data class LocalizedYouTubeExercise(
+    val title: String,
+    val subtitle: String,
+    val videoId: String
+)
+
 object LanguageManager {
 
     fun welcomeTitle(lang: AppLanguage): String = when (lang) {
@@ -32,11 +38,17 @@ object LanguageManager {
         AppLanguage.EN -> "Start Now 🚀"
     }
 
-    // Screen 2
+    // Screen 2 - Personal Data
     fun personalDataTitle(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "البيانات الشخصية"
         AppLanguage.FR -> "Données Personnelles"
         AppLanguage.EN -> "Personal Data"
+    }
+
+    fun step1Subtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "خطوة 1 من 3 - جميع الحقول إجبارية لحساب السعرات والتمارين بدقة"
+        AppLanguage.FR -> "Étape 1 sur 3 - Tous les champs sont obligatoires pour un calcul précis"
+        AppLanguage.EN -> "Step 1 of 3 - All fields required for accurate calories & workout calculation"
     }
 
     fun genderLabel(lang: AppLanguage): String = when (lang) {
@@ -58,9 +70,9 @@ object LanguageManager {
     }
 
     fun ageLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "العمر (سنوات) *"
-        AppLanguage.FR -> "Âge (ans) *"
-        AppLanguage.EN -> "Age (years) *"
+        AppLanguage.AR -> "العمر (18 - 100 سنة) *"
+        AppLanguage.FR -> "Âge (18 - 100 ans) *"
+        AppLanguage.EN -> "Age (18 - 100 years) *"
     }
 
     fun agePlaceholder(lang: AppLanguage): String = when (lang) {
@@ -70,9 +82,9 @@ object LanguageManager {
     }
 
     fun heightLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الطول (سم - cm) *"
-        AppLanguage.FR -> "Taille (cm) *"
-        AppLanguage.EN -> "Height (cm) *"
+        AppLanguage.AR -> "الطول (145 - 205 سم) *"
+        AppLanguage.FR -> "Taille (145 - 205 cm) *"
+        AppLanguage.EN -> "Height (145 - 205 cm) *"
     }
 
     fun heightPlaceholder(lang: AppLanguage): String = when (lang) {
@@ -82,9 +94,9 @@ object LanguageManager {
     }
 
     fun weightLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الوزن الحالي (كغ - kg) *"
-        AppLanguage.FR -> "Poids actuel (kg) *"
-        AppLanguage.EN -> "Current Weight (kg) *"
+        AppLanguage.AR -> "الوزن الحالي (50 - 120 كغ) *"
+        AppLanguage.FR -> "Poids actuel (50 - 120 kg) *"
+        AppLanguage.EN -> "Current Weight (50 - 120 kg) *"
     }
 
     fun weightPlaceholder(lang: AppLanguage): String = when (lang) {
@@ -99,6 +111,37 @@ object LanguageManager {
         AppLanguage.EN -> "Gender *"
     }
 
+    // Validation Error Messages
+    fun ageRangeError(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "العمر يجب أن يكون بين 18 و 100 سنة"
+        AppLanguage.FR -> "L'âge doit être compris entre 18 et 100 ans"
+        AppLanguage.EN -> "Age must be between 18 and 100 years"
+    }
+
+    fun heightRangeError(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الطول يجب أن يكون بين 145 و 205 سم"
+        AppLanguage.FR -> "La taille doit être comprise entre 145 et 205 cm"
+        AppLanguage.EN -> "Height must be between 145 and 205 cm"
+    }
+
+    fun weightRangeError(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الوزن يجب أن يكون بين 50 و 120 كغ"
+        AppLanguage.FR -> "Le poids doit être compris entre 50 et 120 kg"
+        AppLanguage.EN -> "Weight must be between 50 and 120 kg"
+    }
+
+    fun fieldRequiredError(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "هذا الحقل مطلوب"
+        AppLanguage.FR -> "Ce champ est obligatoire"
+        AppLanguage.EN -> "This field is required"
+    }
+
+    fun selectGenderNotice(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "يرجى تحديد الجنس"
+        AppLanguage.FR -> "Veuillez choisir le genre"
+        AppLanguage.EN -> "Please select gender"
+    }
+
     fun btnNext(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "التالي ➡️"
         AppLanguage.FR -> "Suivant ➡️"
@@ -106,16 +149,22 @@ object LanguageManager {
     }
 
     fun fillAllDataNotice(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "⚠️ يرجى اختيار الجنس وإدخال العمر والطول والوزن للمتابعة"
-        AppLanguage.FR -> "⚠️ Veuillez choisir le genre et renseigner l'âge, la taille et le poids"
-        AppLanguage.EN -> "⚠️ Please select gender and enter valid age, height, and weight"
+        AppLanguage.AR -> "⚠️ يرجى تصحيح الحقول المحددة واستيفاء الشروط للمتابعة"
+        AppLanguage.FR -> "⚠️ Veuillez remplir tous les champs selon les critères requis"
+        AppLanguage.EN -> "⚠️ Please ensure all fields meet the required ranges to continue"
     }
 
-    // Screen 3
+    // Screen 3 - Goal & Lifestyle
     fun goalLifestyleTitle(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "الهدف ومستوى النشاط"
         AppLanguage.FR -> "Objectif & Style de vie"
         AppLanguage.EN -> "Goal & Lifestyle"
+    }
+
+    fun step2Subtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "خطوة 2 من 3 - حدد هدفك ونمط حياتك لتخصيص جدولك"
+        AppLanguage.FR -> "Étape 2 sur 3 - Définissez votre objectif et niveau d'activité"
+        AppLanguage.EN -> "Step 2 of 3 - Define your primary goal and daily activity level"
     }
 
     fun mainGoalHeader(lang: AppLanguage): String = when (lang) {
@@ -172,17 +221,23 @@ object LanguageManager {
         AppLanguage.EN -> "Analyze Body & Save ✨"
     }
 
-    // Screen 4
+    // Screen 4 - Analysis & Gym Level
     fun analysisTitle(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "نتيجة التحليل ومستوى الجيم"
         AppLanguage.FR -> "Résultat de l'analyse & Niveau Gym"
         AppLanguage.EN -> "Analysis Result & Gym Level"
     }
 
+    fun step3Subtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "خطوة 3 من 3 - نتائج تحليلك من الذكاء الاصطناعي واختيار جدول التمارين"
+        AppLanguage.FR -> "Étape 3 sur 3 - Résultats de votre analyse IA et choix du programme"
+        AppLanguage.EN -> "Step 3 of 3 - AI body analysis results and training routine selection"
+    }
+
     fun analyzingStatusText(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "جاري المعالجة..."
-        AppLanguage.FR -> "Traitement..."
-        AppLanguage.EN -> "Processing..."
+        AppLanguage.AR -> "جاري المعالجة والتحليل..."
+        AppLanguage.FR -> "Traitement et analyse en cours..."
+        AppLanguage.EN -> "Processing & analyzing body metrics..."
     }
 
     fun bmiLabel(lang: AppLanguage): String = when (lang) {
@@ -212,12 +267,12 @@ object LanguageManager {
     fun gymLevelName(level: GymLevel, lang: AppLanguage): String = when (level) {
         GymLevel.BEGINNER -> when (lang) {
             AppLanguage.AR -> "🟢 مبتدئ (3 أيام - Full Body)"
-            AppLanguage.FR -> "🟢 Débutant (3 jours - Corps complet)"
+            AppLanguage.FR -> "🟢 Débutant (3 jours - Full Body)"
             AppLanguage.EN -> "🟢 Beginner (3 Days - Full Body)"
         }
         GymLevel.INTERMEDIATE -> when (lang) {
             AppLanguage.AR -> "🟡 متوسط (4 أيام - Upper / Lower)"
-            AppLanguage.FR -> "🟡 Intermédiaire (4 jours - Haut / Bas)"
+            AppLanguage.FR -> "🟡 Intermédiaire (4 jours - Upper / Lower)"
             AppLanguage.EN -> "🟡 Intermediate (4 Days - Upper / Lower)"
         }
         GymLevel.ADVANCED -> when (lang) {
@@ -234,6 +289,48 @@ object LanguageManager {
     }
 
     // Dashboard
+    fun dayMonday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الإثنين"
+        AppLanguage.FR -> "Lundi"
+        AppLanguage.EN -> "Monday"
+    }
+
+    fun dayTuesday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الثلاثاء"
+        AppLanguage.FR -> "Mardi"
+        AppLanguage.EN -> "Tuesday"
+    }
+
+    fun dayWednesday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الأربعاء"
+        AppLanguage.FR -> "Mercredi"
+        AppLanguage.EN -> "Wednesday"
+    }
+
+    fun dayThursday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الخميس"
+        AppLanguage.FR -> "Jeudi"
+        AppLanguage.EN -> "Thursday"
+    }
+
+    fun dayFriday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الجمعة"
+        AppLanguage.FR -> "Vendredi"
+        AppLanguage.EN -> "Friday"
+    }
+
+    fun daySaturday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "السبت"
+        AppLanguage.FR -> "Samedi"
+        AppLanguage.EN -> "Saturday"
+    }
+
+    fun daySunday(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الأحد"
+        AppLanguage.FR -> "Dimanche"
+        AppLanguage.EN -> "Sunday"
+    }
+
     fun tabExercises(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "التمارين 🏋️"
         AppLanguage.FR -> "Exercices 🏋️"
@@ -258,10 +355,52 @@ object LanguageManager {
         AppLanguage.EN -> "Refresh Plan"
     }
 
+    fun dailyNutritionGoals(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🎯 الأهداف الغذائية اليومية"
+        AppLanguage.FR -> "🎯 Objectifs Nutritionnels Quotidiens"
+        AppLanguage.EN -> "🎯 Daily Nutrition Targets"
+    }
+
+    fun macroProtein(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "بروتين"
+        AppLanguage.FR -> "Protéines"
+        AppLanguage.EN -> "Protein"
+    }
+
+    fun macroCarbs(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "كاربوهيدرات"
+        AppLanguage.FR -> "Glucides"
+        AppLanguage.EN -> "Carbs"
+    }
+
+    fun macroFats(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "دهون صحية"
+        AppLanguage.FR -> "Lipides"
+        AppLanguage.EN -> "Healthy Fats"
+    }
+
     fun waterTrackerTitle(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "💧 متابع شرب الماء اليومي"
         AppLanguage.FR -> "💧 Suivi de l'eau quotidienne"
         AppLanguage.EN -> "💧 Daily Water Tracker"
+    }
+
+    fun waterGlassesStatus(count: Int, lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "$count / 10 أكواب اليوم"
+        AppLanguage.FR -> "$count / 10 verres aujourd'hui"
+        AppLanguage.EN -> "$count / 10 glasses today"
+    }
+
+    fun setsLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مجموعات"
+        AppLanguage.FR -> "séries"
+        AppLanguage.EN -> "sets"
+    }
+
+    fun repsLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "تكرار"
+        AppLanguage.FR -> "réps"
+        AppLanguage.EN -> "reps"
     }
 
     fun restDayTitle(lang: AppLanguage): String = when (lang) {
@@ -285,7 +424,7 @@ object LanguageManager {
     fun tunisianIngredientsHeader(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "🇹🇳 أطعمة ووجبات تونسية محلية"
         AppLanguage.FR -> "🇹🇳 Repas & Ingrédients Locaux Tunisiens"
-        AppLanguage.EN -> "🇹🇳 Local Tunisian Foods & Ingredients"
+        AppLanguage.EN -> "🇹🇳 Local Tunisian Foods & Meals"
     }
 
     fun youtubeSuggestionsTitle(lang: AppLanguage): String = when (lang) {
@@ -298,6 +437,33 @@ object LanguageManager {
         AppLanguage.AR -> "شرح التمرين"
         AppLanguage.FR -> "Voir tuto"
         AppLanguage.EN -> "Watch Guide"
+    }
+
+    fun youtubeExercisesList(lang: AppLanguage): List<LocalizedYouTubeExercise> = when (lang) {
+        AppLanguage.FR -> listOf(
+            LocalizedYouTubeExercise("🏋️ Développé Couché (Bench)", "Exécution pour pectoraux et force", "rT7DGvm-3yy"),
+            LocalizedYouTubeExercise("🦵 Squat à la Barre", "Technique complète du squat et posture", "ultWZbUMPL8"),
+            LocalizedYouTubeExercise("🏋️‍♂️ Soulevé de Terre (Deadlift)", "Exécution sécurisée dos et fessiers", "op9kVnSso6Q"),
+            LocalizedYouTubeExercise("💪 Tirage Poitrine (Lat Pulldown)", "Isolation du grand dorsal sans tricher", "CAwf7n6Luuc"),
+            LocalizedYouTubeExercise("🎯 Développé Militaire Épaules", "Renforcement des deltoïdes", "qEwKCR5JCog"),
+            LocalizedYouTubeExercise("⚡ Biceps & Triceps", "Technique bras pour volume optimal", "ykJmrZ5v0Oo")
+        )
+        AppLanguage.EN -> listOf(
+            LocalizedYouTubeExercise("🏋️ Barbell Bench Press", "Proper form for chest strength & hypertrophy", "rT7DGvm-3yy"),
+            LocalizedYouTubeExercise("🦵 Barbell Back Squat", "Full squat depth and knee alignment guide", "ultWZbUMPL8"),
+            LocalizedYouTubeExercise("🏋️‍♂️ Conventional Deadlift", "Back safety and hip drive mechanics", "op9kVnSso6Q"),
+            LocalizedYouTubeExercise("💪 Wide-Grip Lat Pulldown", "Lats engagement & elbow drive tutorial", "CAwf7n6Luuc"),
+            LocalizedYouTubeExercise("🎯 Overhead Shoulder Press", "Strict pressing form & shoulder stability", "qEwKCR5JCog"),
+            LocalizedYouTubeExercise("⚡ Arms (Biceps & Triceps)", "Isolation technique for arm growth", "ykJmrZ5v0Oo")
+        )
+        AppLanguage.AR -> listOf(
+            LocalizedYouTubeExercise("🏋️ Bench Press (بنش بريس)", "شرح الأداء الصحيح للصدر الأوسط والأسفل", "rT7DGvm-3yy"),
+            LocalizedYouTubeExercise("🦵 Barbell Squats (السكوات)", "طريقة أداء السكوات بالبار وحماية الركبتين", "ultWZbUMPL8"),
+            LocalizedYouTubeExercise("🏋️‍♂️ Deadlift (الرفعة المميتة)", "شرح طريقة الديدلفت للظهر والظهر السفلي", "op9kVnSso6Q"),
+            LocalizedYouTubeExercise("💪 Lat Pulldown (سحب الظهر)", "تمرين استهداف الظهر العريض بأمان", "CAwf7n6Luuc"),
+            LocalizedYouTubeExercise("🎯 Overhead Shoulder Press", "شرح تمرين ضغط الأكتاف بالبار أو الدامبلز", "qEwKCR5JCog"),
+            LocalizedYouTubeExercise("⚡ Biceps & Triceps Workout", "تمارين تضخيم عضلات البايسبس والترايسبس", "ykJmrZ5v0Oo")
+        )
     }
 
     fun tutorialModalTitle(lang: AppLanguage): String = when (lang) {
@@ -386,197 +552,136 @@ object LanguageManager {
 
     fun toggleThemeLabel(lang: AppLanguage, isDark: Boolean): String = if (isDark) lightModeLabel(lang) else darkModeLabel(lang)
 
-    // --- Natural Foods Section Strings ---
-    fun naturalFoodsSectionTitle(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "🌱 دليل الأطعمة الطبيعية الكاملة (لكل 100g)"
-        AppLanguage.FR -> "🌱 Guide des Aliments Naturels (par 100g)"
-        AppLanguage.EN -> "🌱 Whole Foods Nutrition Guide (per 100g)"
+    // Custom Food & Calorie Calculator Tab & Screen
+    fun tabCustomCalculator(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حاسبة الوجبات 🧮"
+        AppLanguage.FR -> "Calculateur 🧮"
+        AppLanguage.EN -> "Meal Calc 🧮"
     }
 
-    fun naturalFoodsSubtitle(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "تحليل غذائي دقيق للقيم الغذائية، الفيتامينات والمعادن للأغذية النباتية والحيوانية"
-        AppLanguage.FR -> "Analyse nutritionnelle complète (calories, macros, vitamines et minéraux)"
-        AppLanguage.EN -> "Precise breakdown of calories, macros, vitamins & minerals per 100g"
+    fun customCalculatorTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حاسبة الأطعمة والسعرات المخصصة"
+        AppLanguage.FR -> "Calculateur d'Aliments & Calories"
+        AppLanguage.EN -> "Custom Food & Calorie Calculator"
     }
 
-    fun filterAll(lang: AppLanguage): String = when (lang) {
+    fun customCalculatorSubtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "اختر الأطعمة الطبيعية وحدد الكمية بالغرام لحساب السعرات والماكروز لحظياً"
+        AppLanguage.FR -> "Sélectionnez vos aliments et ajustez les portions en grammes en temps réel"
+        AppLanguage.EN -> "Select whole foods and set portion grams for real-time macro calculation"
+    }
+
+    fun categoryAll(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "الكل"
         AppLanguage.FR -> "Tous"
         AppLanguage.EN -> "All"
     }
 
-    fun filterPlantBased(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "🌱 أطعمة نباتية"
-        AppLanguage.FR -> "🌱 Végétal"
-        AppLanguage.EN -> "🌱 Plant-based"
+    fun categoryVegetables(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الخضروات 🥬"
+        AppLanguage.FR -> "Légumes 🥬"
+        AppLanguage.EN -> "Vegetables 🥬"
     }
 
-    fun filterAnimalBased(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "🥩 أطعمة حيوانية"
-        AppLanguage.FR -> "🥩 Animal"
-        AppLanguage.EN -> "🥩 Animal-based"
+    fun categoryFruits(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الفواكه 🍎"
+        AppLanguage.FR -> "Fruits 🍎"
+        AppLanguage.EN -> "Fruits 🍎"
     }
 
-    fun vitaminsMineralsLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الفيتامينات والمعادن الأساسية:"
-        AppLanguage.FR -> "Vitamines & Minéraux clés :"
-        AppLanguage.EN -> "Key Vitamins & Minerals:"
+    fun categoryMeatPoultry(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "اللحوم والدواجن 🍗"
+        AppLanguage.FR -> "Viandes & Volailles 🍗"
+        AppLanguage.EN -> "Meats & Poultry 🍗"
     }
 
-    fun healthBenefitsLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الفائدة الحيوية للعضلات والصحة:"
-        AppLanguage.FR -> "Bénéfice santé & musculaire :"
-        AppLanguage.EN -> "Health & Fitness Benefit:"
+    fun categoryFishSeafood(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الأسماك والمأكولات البحرية 🐟"
+        AppLanguage.FR -> "Poissons & Fruits de mer 🐟"
+        AppLanguage.EN -> "Fish & Seafood 🐟"
     }
 
-    // --- AI Meal Calorie Calculator Strings ---
-    fun aiCalculatorTab(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "حاسبة السعرات الذكية"
-        AppLanguage.FR -> "Calculateur IA"
-        AppLanguage.EN -> "AI Calorie Calc"
+    fun categoryGrainsLegumes(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "البقوليات والحبوب 🌾"
+        AppLanguage.FR -> "Légumineuses & Céréales 🌾"
+        AppLanguage.EN -> "Legumes & Grains 🌾"
     }
 
-    fun aiCalculatorTitle(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "⚡ حاسبة الوجبات الذكية بالذكاء الاصطناعي"
-        AppLanguage.FR -> "⚡ Calculateur de Repas Intelligent IA"
-        AppLanguage.EN -> "⚡ AI Smart Meal Calorie Calculator"
+    fun categorySupplementsNuts(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "المكملات والمكسرات 🥜"
+        AppLanguage.FR -> "Compléments & Noix 🥜"
+        AppLanguage.EN -> "Supplements & Nuts 🥜"
     }
 
-    fun aiCalculatorSubtitle(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "اختر المكونات وحدد الكميات، وسيقوم نموذج Gemini بحساب السعرات والماكروز وتقديم تحليل صحي فوري"
-        AppLanguage.FR -> "Sélectionnez les ingrédients et laissez l'IA Gemini calculer les calories, macros et vous conseiller"
-        AppLanguage.EN -> "Pick ingredients and set quantities; Gemini AI will compute exact calories, macros & dietary insights"
+    fun myMealPlate(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🍽️ طبق وجبتك المخصصة"
+        AppLanguage.FR -> "🍽️ Votre Assiette Personnalisée"
+        AppLanguage.EN -> "🍽️ Your Custom Meal Plate"
     }
 
-    fun selectCategory(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "التصنيفات الغذائية"
-        AppLanguage.FR -> "Catégories d'aliments"
-        AppLanguage.EN -> "Food Categories"
+    fun noFoodSelected(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "لم تختر أي مكونات بعد. انقر على الأطعمة أعلاه لإضافتها وتحديد الكمية."
+        AppLanguage.FR -> "Aucun ingrédient sélectionné. Touchez un aliment ci-dessus pour l'ajouter."
+        AppLanguage.EN -> "No items selected yet. Tap any whole food above to add and customize portion."
     }
 
-    fun catVegetables(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "خضروات"
-        AppLanguage.FR -> "Légumes"
-        AppLanguage.EN -> "Vegetables"
+    fun gramsUnit(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "غرام"
+        AppLanguage.FR -> "g"
+        AppLanguage.EN -> "g"
     }
 
-    fun catFruits(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "فواكه"
-        AppLanguage.FR -> "Fruits"
-        AppLanguage.EN -> "Fruits"
+    fun adjustQuantity(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "تعديل الكمية"
+        AppLanguage.FR -> "Ajuster la portion"
+        AppLanguage.EN -> "Adjust Portion"
     }
 
-    fun catMeats(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "لحوم ودواجن"
-        AppLanguage.FR -> "Viandes"
-        AppLanguage.EN -> "Meats & Poultry"
+    fun clearPlate(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مسح الطبق"
+        AppLanguage.FR -> "Vider l'assiette"
+        AppLanguage.EN -> "Clear Plate"
     }
 
-    fun catFish(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "أسماك وبحريات"
-        AppLanguage.FR -> "Poissons"
-        AppLanguage.EN -> "Fish & Seafood"
+    fun totalMealCalories(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "السعرات الإجمالية للوجبة"
+        AppLanguage.FR -> "Calories Totales du Repas"
+        AppLanguage.EN -> "Total Meal Calories"
     }
 
-    fun catGrains(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "حبوب وبقوليات"
-        AppLanguage.FR -> "Céréales & Légumineuses"
-        AppLanguage.EN -> "Grains & Legumes"
+    fun macroBreakdown(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "توزيع العناصر الغذائية (Macros)"
+        AppLanguage.FR -> "Répartition des Macronutriments"
+        AppLanguage.EN -> "Macronutrient Breakdown"
     }
 
-    fun catDairy(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "ألبان وبيض"
-        AppLanguage.FR -> "Laitages & Œufs"
-        AppLanguage.EN -> "Dairy & Eggs"
+    fun foodSummaryHeader(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "📊 ملخص القيمة الغذائية الفوري"
+        AppLanguage.FR -> "📊 Résumé Nutritionnel en Direct"
+        AppLanguage.EN -> "📊 Real-Time Nutrition Summary"
     }
 
-    fun catHealthyFats(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "مكسرات ودهون صحية"
-        AppLanguage.FR -> "Noix & Bonnes Graisses"
-        AppLanguage.EN -> "Nuts & Healthy Fats"
+    fun per100gLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "لكل 100 غرام:"
+        AppLanguage.FR -> "Pour 100g :"
+        AppLanguage.EN -> "Per 100g:"
     }
 
-    fun selectedItemsSummary(count: Int, lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "المكونات المختارة ($count)"
-        AppLanguage.FR -> "Ingrédients sélectionnés ($count)"
-        AppLanguage.EN -> "Selected Items ($count)"
-    }
-
-    fun calculateWithAiBtn(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "⚡ تحليل الوجبة بالذكاء الاصطناعي (Gemini)"
-        AppLanguage.FR -> "⚡ Analyser avec l'IA Gemini"
-        AppLanguage.EN -> "⚡ Calculate with Gemini AI"
-    }
-
-    fun calculatingWithAi(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "جاري التحليل الذكي للوجبة..."
-        AppLanguage.FR -> "Analyse intelligente en cours..."
-        AppLanguage.EN -> "Analyzing meal with Gemini AI..."
-    }
-
-    fun mealAnalysisSummaryTitle(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "📊 ملخص التحليل الغذائي للوجبة"
-        AppLanguage.FR -> "📊 Résumé de l'analyse nutritionnelle"
-        AppLanguage.EN -> "📊 Meal Nutrition Summary"
-    }
-
-    fun totalCalories(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "إجمالي السعرات"
-        AppLanguage.FR -> "Calories Totales"
-        AppLanguage.EN -> "Total Calories"
-    }
-
-    fun protein(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "بروتين"
-        AppLanguage.FR -> "Protéines"
-        AppLanguage.EN -> "Protein"
-    }
-
-    fun carbs(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "كاربوهيدرات"
-        AppLanguage.FR -> "Glucides"
-        AppLanguage.EN -> "Carbs"
-    }
-
-    fun fats(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "دهون"
-        AppLanguage.FR -> "Lipides"
-        AppLanguage.EN -> "Fats"
-    }
-
-    fun glycemicIndex(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "المؤشر الجلايسيمي"
-        AppLanguage.FR -> "Indice Glycémique"
-        AppLanguage.EN -> "Glycemic Index"
-    }
-
-    fun bestTimingLabel(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "التوقيت الرياضي الأنسب:"
-        AppLanguage.FR -> "Moment idéal de consommation :"
-        AppLanguage.EN -> "Optimal Timing:"
-    }
-
-    fun aiNutritionistInsight(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "💡 نصيحة أخصائي التغذية الذكي:"
-        AppLanguage.FR -> "💡 Conseil du nutritionniste IA :"
-        AppLanguage.EN -> "💡 AI Nutritionist Insight:"
-    }
-
-    fun resetMealBtn(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "إعادة ضبط واختيار جديد"
-        AppLanguage.FR -> "Réinitialiser"
-        AppLanguage.EN -> "Reset Selection"
+    fun tapToAddToPlate(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إضافة للطبق +"
+        AppLanguage.FR -> "Ajouter à l'assiette +"
+        AppLanguage.EN -> "Add to Plate +"
     }
 
     fun searchFoodPlaceholder(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "ابحث عن مكون طبيعي (دجاج، شوفان، سبانخ...)"
+        AppLanguage.AR -> "ابحث عن أي طعام طبيعي..."
         AppLanguage.FR -> "Rechercher un aliment..."
-        AppLanguage.EN -> "Search whole food ingredient..."
+        AppLanguage.EN -> "Search whole foods..."
     }
 
-    fun emptySelectionPrompt(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "انقر على أي مكون في القائمة لإضافته إلى وجبتك وتعديل وزنه بالغرام"
-        AppLanguage.FR -> "Appuyez sur un aliment ci-dessous pour l'ajouter à votre repas"
-        AppLanguage.EN -> "Tap any ingredient below to add it and adjust weight in grams"
+    fun totalWeightSelected(totalGrams: Int, lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الوزن الإجمالي للوجبة: $totalGrams غرام"
+        AppLanguage.FR -> "Poids total du repas : $totalGrams g"
+        AppLanguage.EN -> "Total meal weight: $totalGrams g"
     }
 }

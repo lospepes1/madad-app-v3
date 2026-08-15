@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.data.model.AppLanguage
 import com.example.ui.screens.AnalysisGymLevelScreen
 import com.example.ui.screens.DashboardScreen
 import com.example.ui.screens.GoalLifestyleScreen
@@ -28,12 +32,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: MidadViewModel = viewModel()
             val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
-            MidadTheme(darkTheme = isDarkMode) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MidadMainApp(viewModel = viewModel)
+            val userProfile by viewModel.userProfile.collectAsStateWithLifecycle()
+            val layoutDirection = if (userProfile.language == AppLanguage.AR) LayoutDirection.Rtl else LayoutDirection.Ltr
+
+            CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
+                MidadTheme(darkTheme = isDarkMode) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        MidadMainApp(viewModel = viewModel)
+                    }
                 }
             }
         }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Female
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Male
@@ -23,10 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.data.model.AppLanguage
 import com.example.data.model.Gender
 import com.example.data.model.UserProfile
 import com.example.localization.LanguageManager
@@ -59,14 +58,26 @@ fun PersonalDataScreen(
         mutableStateOf(if (userProfile.weightKg > 0) userProfile.weightKg.toInt().toString() else "")
     }
 
+    var ageTouched by remember { mutableStateOf(userProfile.age > 0) }
+    var heightTouched by remember { mutableStateOf(userProfile.heightCm > 0) }
+    var weightTouched by remember { mutableStateOf(userProfile.weightKg > 0) }
+
     val ageVal = ageText.toIntOrNull() ?: 0
     val heightVal = heightText.toFloatOrNull() ?: 0f
     val weightVal = weightText.toFloatOrNull() ?: 0f
 
+    // Strict numerical range validation:
+    // Age: 18..100 years
+    // Height: 145..205 cm
+    // Weight: 50..120 kg
     val isGenderSelected = selectedGender != null
-    val isAgeValid = ageVal in 10..120
-    val isHeightValid = heightVal in 100f..250f
-    val isWeightValid = weightVal in 30f..300f
+    val isAgeValid = ageVal in 18..100
+    val isHeightValid = heightVal in 145f..205f
+    val isWeightValid = weightVal in 50f..120f
+
+    val isAgeError = (ageTouched || ageText.isNotEmpty()) && !isAgeValid
+    val isHeightError = (heightTouched || heightText.isNotEmpty()) && !isHeightValid
+    val isWeightError = (weightTouched || weightText.isNotEmpty()) && !isWeightValid
 
     val isFormComplete = isGenderSelected && isAgeValid && isHeightValid && isWeightValid
 
@@ -112,7 +123,7 @@ fun PersonalDataScreen(
                 )
 
                 Text(
-                    text = "خطوة 1 من 3 - جميع الحقول إجبارية لحساب السعرات والتمارين بدقة",
+                    text = LanguageManager.step1Subtitle(lang),
                     fontSize = 13.sp,
                     color = colors.textSecondary,
                     modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
@@ -202,18 +213,24 @@ fun PersonalDataScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Age Input
+                // Age Input with Strict Validation (18-100 years)
                 Text(
                     text = LanguageManager.ageLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary,
+                    color = if (isAgeError) colors.error else colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = ageText,
-                    onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) ageText = it },
+                    onValueChange = {
+                        ageTouched = true
+                        if (it.length <= 3 && it.all { char -> char.isDigit() }) {
+                            ageText = it
+                        }
+                    },
+                    isError = isAgeError,
                     placeholder = {
                         Text(
                             text = LanguageManager.agePlaceholder(lang),
@@ -221,6 +238,28 @@ fun PersonalDataScreen(
                             fontSize = 14.sp
                         )
                     },
+                    supportingText = if (isAgeError) {
+                        {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ErrorOutline,
+                                    contentDescription = "Error",
+                                    tint = colors.error,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = if (ageText.isEmpty()) LanguageManager.fieldRequiredError(lang) else LanguageManager.ageRangeError(lang),
+                                    color = colors.error,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    } else null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_age"),
@@ -231,29 +270,42 @@ fun PersonalDataScreen(
                         unfocusedContainerColor = colors.cardBackground,
                         focusedBorderColor = colors.primaryAccent,
                         unfocusedBorderColor = colors.cardBorder,
+                        errorBorderColor = colors.error,
+                        errorContainerColor = colors.error.copy(alpha = 0.08f),
+                        errorLeadingIconColor = colors.error,
                         focusedTextColor = colors.textPrimary,
                         unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = colors.primaryAccent)
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = if (isAgeError) colors.error else colors.primaryAccent
+                        )
                     },
                     singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Height Input
+                // Height Input with Strict Validation (145-205 cm)
                 Text(
                     text = LanguageManager.heightLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary,
+                    color = if (isHeightError) colors.error else colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = heightText,
-                    onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) heightText = it },
+                    onValueChange = {
+                        heightTouched = true
+                        if (it.length <= 3 && it.all { char -> char.isDigit() }) {
+                            heightText = it
+                        }
+                    },
+                    isError = isHeightError,
                     placeholder = {
                         Text(
                             text = LanguageManager.heightPlaceholder(lang),
@@ -261,6 +313,28 @@ fun PersonalDataScreen(
                             fontSize = 14.sp
                         )
                     },
+                    supportingText = if (isHeightError) {
+                        {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ErrorOutline,
+                                    contentDescription = "Error",
+                                    tint = colors.error,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = if (heightText.isEmpty()) LanguageManager.fieldRequiredError(lang) else LanguageManager.heightRangeError(lang),
+                                    color = colors.error,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    } else null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_height"),
@@ -271,29 +345,42 @@ fun PersonalDataScreen(
                         unfocusedContainerColor = colors.cardBackground,
                         focusedBorderColor = colors.primaryAccent,
                         unfocusedBorderColor = colors.cardBorder,
+                        errorBorderColor = colors.error,
+                        errorContainerColor = colors.error.copy(alpha = 0.08f),
+                        errorLeadingIconColor = colors.error,
                         focusedTextColor = colors.textPrimary,
                         unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Height, contentDescription = null, tint = colors.primaryAccent)
+                        Icon(
+                            imageVector = Icons.Default.Height,
+                            contentDescription = null,
+                            tint = if (isHeightError) colors.error else colors.primaryAccent
+                        )
                     },
                     singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Weight Input
+                // Weight Input with Strict Validation (50-120 kg)
                 Text(
                     text = LanguageManager.weightLabel(lang),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary,
+                    color = if (isWeightError) colors.error else colors.textPrimary,
                     modifier = Modifier.padding(bottom = 6.dp)
                 )
 
                 OutlinedTextField(
                     value = weightText,
-                    onValueChange = { if (it.length <= 3 && it.all { char -> char.isDigit() }) weightText = it },
+                    onValueChange = {
+                        weightTouched = true
+                        if (it.length <= 3 && it.all { char -> char.isDigit() }) {
+                            weightText = it
+                        }
+                    },
+                    isError = isWeightError,
                     placeholder = {
                         Text(
                             text = LanguageManager.weightPlaceholder(lang),
@@ -301,6 +388,28 @@ fun PersonalDataScreen(
                             fontSize = 14.sp
                         )
                     },
+                    supportingText = if (isWeightError) {
+                        {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 2.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ErrorOutline,
+                                    contentDescription = "Error",
+                                    tint = colors.error,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = if (weightText.isEmpty()) LanguageManager.fieldRequiredError(lang) else LanguageManager.weightRangeError(lang),
+                                    color = colors.error,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                        }
+                    } else null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_weight"),
@@ -311,11 +420,18 @@ fun PersonalDataScreen(
                         unfocusedContainerColor = colors.cardBackground,
                         focusedBorderColor = colors.primaryAccent,
                         unfocusedBorderColor = colors.cardBorder,
+                        errorBorderColor = colors.error,
+                        errorContainerColor = colors.error.copy(alpha = 0.08f),
+                        errorLeadingIconColor = colors.error,
                         focusedTextColor = colors.textPrimary,
                         unfocusedTextColor = colors.textPrimary
                     ),
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.MonitorWeight, contentDescription = null, tint = colors.primaryAccent)
+                        Icon(
+                            imageVector = Icons.Default.MonitorWeight,
+                            contentDescription = null,
+                            tint = if (isWeightError) colors.error else colors.primaryAccent
+                        )
                     },
                     singleLine = true
                 )

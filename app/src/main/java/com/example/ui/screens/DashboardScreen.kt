@@ -225,6 +225,32 @@ fun DashboardScreen(
                         ),
                         modifier = Modifier.testTag("tab_nutrition")
                     )
+
+                    NavigationBarItem(
+                        selected = activeTab == 2,
+                        onClick = { onTabSelected(2) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Default.Calculate,
+                                contentDescription = "Meal Calculator"
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = LanguageManager.tabCustomCalculator(lang),
+                                fontSize = 13.sp,
+                                fontWeight = if (activeTab == 2) FontWeight.Bold else FontWeight.Normal
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = if (isDarkMode) Color.Black else Color.White,
+                            selectedTextColor = colors.primaryAccent,
+                            indicatorColor = colors.primaryAccent,
+                            unselectedIconColor = colors.textSecondary,
+                            unselectedTextColor = colors.textSecondary
+                        ),
+                        modifier = Modifier.testTag("tab_custom_calculator")
+                    )
                 }
         },
         containerColor = colors.background
@@ -394,6 +420,7 @@ fun DashboardScreen(
                                 items(currentDay.exercises) { exercise ->
                                     ExerciseCard(
                                         exercise = exercise,
+                                        lang = lang,
                                         onToggle = {
                                             onToggleExercise(currentDay.dayName, exercise.id)
                                         },
@@ -401,7 +428,7 @@ fun DashboardScreen(
                                             activeTutorial = ExerciseTutorialHelper.getTutorial(
                                                 exerciseName = exercise.name,
                                                 muscleTarget = exercise.muscleTarget,
-                                                setsAndReps = "${exercise.sets} مجموعات × ${exercise.reps} تكرار",
+                                                setsAndReps = "${exercise.sets} ${LanguageManager.setsLabel(lang)} × ${exercise.reps} ${LanguageManager.repsLabel(lang)}",
                                                 explicitVideoId = exercise.videoId,
                                                 lang = lang
                                             )
@@ -443,7 +470,7 @@ fun DashboardScreen(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
-                                    text = "🎯 الأهداف الغذائية اليومية",
+                                    text = LanguageManager.dailyNutritionGoals(lang),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = colors.primaryAccent
@@ -453,9 +480,9 @@ fun DashboardScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    MacroBadge("بروتين", "${nutritionPlan?.targetProteinGrams ?: 150}g")
-                                    MacroBadge("كاربوهيدرات", "${nutritionPlan?.targetCarbsGrams ?: 220}g")
-                                    MacroBadge("دهون صحية", "${nutritionPlan?.targetFatGrams ?: 60}g")
+                                    MacroBadge(LanguageManager.macroProtein(lang), "${nutritionPlan?.targetProteinGrams ?: 150}g")
+                                    MacroBadge(LanguageManager.macroCarbs(lang), "${nutritionPlan?.targetCarbsGrams ?: 220}g")
+                                    MacroBadge(LanguageManager.macroFats(lang), "${nutritionPlan?.targetFatGrams ?: 60}g")
                                 }
                             }
                         }
@@ -485,7 +512,7 @@ fun DashboardScreen(
                                         color = colors.textPrimary
                                     )
                                     Text(
-                                        text = "$waterGlasses / 10 أكواب اليوم",
+                                        text = LanguageManager.waterGlassesStatus(waterGlasses, lang),
                                         fontSize = 13.sp,
                                         color = colors.primaryAccent,
                                         modifier = Modifier.padding(top = 2.dp)
@@ -546,6 +573,14 @@ fun DashboardScreen(
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
             }
+
+            // Tab 2: Custom Food & Calorie Calculator
+            if (activeTab == 2) {
+                CustomFoodCalculatorScreen(
+                    language = lang,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 
@@ -562,6 +597,7 @@ fun DashboardScreen(
 @Composable
 fun ExerciseCard(
     exercise: Exercise,
+    lang: AppLanguage,
     onToggle: () -> Unit,
     onOpenTutorial: () -> Unit
 ) {
@@ -616,7 +652,7 @@ fun ExerciseCard(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = "${exercise.muscleTarget} • ${exercise.sets} مجموعات × ${exercise.reps} تكرار",
+                        text = "${exercise.muscleTarget} • ${exercise.sets} ${LanguageManager.setsLabel(lang)} × ${exercise.reps} ${LanguageManager.repsLabel(lang)}",
                         fontSize = 11.sp,
                         color = if (isDone) colors.textSecondary else colors.primaryAccent
                     )
@@ -657,26 +693,13 @@ fun ExerciseCard(
     }
 }
 
-data class YouTubeGymExercise(
-    val title: String,
-    val subtitle: String,
-    val videoId: String
-)
-
 @Composable
 fun YouTubeGymSection(
     lang: AppLanguage,
     onSelectExercise: (ExerciseTutorialDetail) -> Unit
 ) {
     val colors = AppTheme.colors
-    val youtubeExercises = listOf(
-        YouTubeGymExercise("🏋️ Bench Press (بنش بريس)", "شرح الأداء الصحيح للصدر الأوسط والأسفل", "rT7DGvm-3yy"),
-        YouTubeGymExercise("🦵 Barbell Squats (السكوات)", "طريقة أداء السكوات بالبار وحماية الركبتين", "ultWZbUMPL8"),
-        YouTubeGymExercise("🏋️‍♂️ Deadlift (الرفعة المميتة)", "شرح طريقة الديدلفت للظهر والظهر السفلي", "op9kVnSso6Q"),
-        YouTubeGymExercise("💪 Lat Pulldown (سحب الظهر)", "تمرين استهداف الظهر العريض بأمان", "CAwf7n6Luuc"),
-        YouTubeGymExercise("🎯 Overhead Shoulder Press", "شرح تمرين ضغط الأكتاف بالبار أو الدامبلز", "qEwKCR5JCog"),
-        YouTubeGymExercise("⚡ Biceps & Triceps Workout", "تمارين تضخيم عضلات البايسبس والترايسبس", "ykJmrZ5v0Oo")
-    )
+    val youtubeExercises = LanguageManager.youtubeExercisesList(lang)
 
     Column(
         modifier = Modifier

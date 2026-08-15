@@ -86,7 +86,7 @@ fun GoalLifestyleScreen(
                 )
 
                 Text(
-                    text = "خطوة 2 من 3 - حدد هدفك ونمط حياتك لتخصيص جدولك",
+                    text = LanguageManager.step2Subtitle(lang),
                     fontSize = 13.sp,
                     color = colors.textSecondary,
                     modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)

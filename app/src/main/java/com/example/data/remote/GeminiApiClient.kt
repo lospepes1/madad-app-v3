@@ -454,58 +454,164 @@ class GeminiApiClient {
             healthTip = getDefaultHealthTip(profile)
         )
 
-        val meals = listOf(
-            Meal(
-                type = "Breakfast",
-                title = if (profile.language == AppLanguage.AR) "فطور الصباح التونسي" else "Petit Déjeuner",
-                ingredients = listOf(
-                    MealIngredient("بسيسة تونسية بالفاكية وزيت الزيتون", "70g", 280),
-                    MealIngredient("ريكوتا تونسية طازجة", "100g", 140),
-                    MealIngredient("بيض مسلوق", "2 حبات", 150)
+        val meals = when (profile.language) {
+            AppLanguage.AR -> listOf(
+                Meal(
+                    type = "Breakfast",
+                    title = "فطور الصباح التونسي الصحي",
+                    ingredients = listOf(
+                        MealIngredient("بسيسة تونسية بالفاكية وزيت الزيتون", "70g", 280),
+                        MealIngredient("ريكوتا تونسية طازجة", "100g", 140),
+                        MealIngredient("بيض مسلوق", "2 حبات", 150)
+                    ),
+                    totalCalories = 570,
+                    proteinGrams = 30,
+                    carbsGrams = 50,
+                    fatGrams = 18
                 ),
-                totalCalories = 570,
-                proteinGrams = 30,
-                carbsGrams = 50,
-                fatGrams = 18
-            ),
-            Meal(
-                type = "Lunch",
-                title = if (profile.language == AppLanguage.AR) "وجبة الغداء المشوية" else "Déjeuner",
-                ingredients = listOf(
-                    MealIngredient("صدر دجاج مشوي / حوت مشوي (سمك)", "200g", 320),
-                    MealIngredient("سلطة مشوية تونسية", "150g", 160),
-                    MealIngredient("أرز بني أو أرز مفور", "150g", 200)
+                Meal(
+                    type = "Lunch",
+                    title = "وجبة الغداء المشوية",
+                    ingredients = listOf(
+                        MealIngredient("صدر دجاج مشوي / حوت مشوي (سمك)", "200g", 320),
+                        MealIngredient("سلطة مشوية تونسية", "150g", 160),
+                        MealIngredient("أرز بني أو أرز مفور", "150g", 200)
+                    ),
+                    totalCalories = 680,
+                    proteinGrams = 50,
+                    carbsGrams = 48,
+                    fatGrams = 20
                 ),
-                totalCalories = 680,
-                proteinGrams = 50,
-                carbsGrams = 48,
-                fatGrams = 20
-            ),
-            Meal(
-                type = "Snack",
-                title = if (profile.language == AppLanguage.AR) "سناك الطاقة" else "Collation",
-                ingredients = listOf(
-                    MealIngredient("تمر دقلة نور وشوفان", "5 حبات + 40g", 210),
-                    MealIngredient("علبة تونة بالماء", "80g", 90)
+                Meal(
+                    type = "Snack",
+                    title = "سناك الطاقة والحيوية",
+                    ingredients = listOf(
+                        MealIngredient("تمر دقلة نور وشوفان", "5 حبات + 40g", 210),
+                        MealIngredient("علبة تونة بالماء", "80g", 90)
+                    ),
+                    totalCalories = 300,
+                    proteinGrams = 24,
+                    carbsGrams = 40,
+                    fatGrams = 4
                 ),
-                totalCalories = 300,
-                proteinGrams = 24,
-                carbsGrams = 40,
-                fatGrams = 4
-            ),
-            Meal(
-                type = "Dinner",
-                title = if (profile.language == AppLanguage.AR) "وجبة العشاء الخفيفة" else "Dîner",
-                ingredients = listOf(
-                    MealIngredient("عجة تونسية خفيفة بالبيض والتونة", "صحن متوسط", 340),
-                    MealIngredient("سلطة خضراء طازجة", "200g", 50)
-                ),
-                totalCalories = 390,
-                proteinGrams = 28,
-                carbsGrams = 14,
-                fatGrams = 16
+                Meal(
+                    type = "Dinner",
+                    title = "وجبة العشاء الخفيفة",
+                    ingredients = listOf(
+                        MealIngredient("عجة تونسية خفيفة بالبيض والتونة", "صحن متوسط", 340),
+                        MealIngredient("سلطة خضراء طازجة", "200g", 50)
+                    ),
+                    totalCalories = 390,
+                    proteinGrams = 28,
+                    carbsGrams = 14,
+                    fatGrams = 16
+                )
             )
-        )
+            AppLanguage.FR -> listOf(
+                Meal(
+                    type = "Breakfast",
+                    title = "Petit-déjeuner Vitalité",
+                    ingredients = listOf(
+                        MealIngredient("Flocons d'avoine et fruits secs", "70g", 280),
+                        MealIngredient("Ricotta fraîche ou fromage blanc", "100g", 140),
+                        MealIngredient("Œufs durs ou au plat", "2 unités", 150)
+                    ),
+                    totalCalories = 570,
+                    proteinGrams = 30,
+                    carbsGrams = 50,
+                    fatGrams = 18
+                ),
+                Meal(
+                    type = "Lunch",
+                    title = "Déjeuner Protéiné Grillé",
+                    ingredients = listOf(
+                        MealIngredient("Blanc de poulet ou poisson grillé", "200g", 320),
+                        MealIngredient("Salade de légumes grillés", "150g", 160),
+                        MealIngredient("Riz complet ou patates douces", "150g", 200)
+                    ),
+                    totalCalories = 680,
+                    proteinGrams = 50,
+                    carbsGrams = 48,
+                    fatGrams = 20
+                ),
+                Meal(
+                    type = "Snack",
+                    title = "Collation Énergie & Musculation",
+                    ingredients = listOf(
+                        MealIngredient("Dattes naturelles & amandes", "5 unités + 30g", 210),
+                        MealIngredient("Boîte de thon au naturel", "80g", 90)
+                    ),
+                    totalCalories = 300,
+                    proteinGrams = 24,
+                    carbsGrams = 40,
+                    fatGrams = 4
+                ),
+                Meal(
+                    type = "Dinner",
+                    title = "Dîner Léger et Digeste",
+                    ingredients = listOf(
+                        MealIngredient("Omelette aux herbes et thon", "1 portion", 340),
+                        MealIngredient("Salade verte et huile d'olive", "200g", 50)
+                    ),
+                    totalCalories = 390,
+                    proteinGrams = 28,
+                    carbsGrams = 14,
+                    fatGrams = 16
+                )
+            )
+            AppLanguage.EN -> listOf(
+                Meal(
+                    type = "Breakfast",
+                    title = "Power Energy Breakfast",
+                    ingredients = listOf(
+                        MealIngredient("Oats with nuts & seeds", "70g", 280),
+                        MealIngredient("Fresh cottage cheese or Greek yogurt", "100g", 140),
+                        MealIngredient("Whole boiled eggs", "2 eggs", 150)
+                    ),
+                    totalCalories = 570,
+                    proteinGrams = 30,
+                    carbsGrams = 50,
+                    fatGrams = 18
+                ),
+                Meal(
+                    type = "Lunch",
+                    title = "High-Protein Grill Lunch",
+                    ingredients = listOf(
+                        MealIngredient("Grilled chicken breast or sea fish", "200g", 320),
+                        MealIngredient("Roasted vegetable mix", "150g", 160),
+                        MealIngredient("Brown rice or sweet potato", "150g", 200)
+                    ),
+                    totalCalories = 680,
+                    proteinGrams = 50,
+                    carbsGrams = 48,
+                    fatGrams = 20
+                ),
+                Meal(
+                    type = "Snack",
+                    title = "Pre-Workout Fuel Snack",
+                    ingredients = listOf(
+                        MealIngredient("Dates & natural almonds", "5 pcs + 30g", 210),
+                        MealIngredient("Canned tuna in water", "80g", 90)
+                    ),
+                    totalCalories = 300,
+                    proteinGrams = 24,
+                    carbsGrams = 40,
+                    fatGrams = 4
+                ),
+                Meal(
+                    type = "Dinner",
+                    title = "Light Recovery Dinner",
+                    ingredients = listOf(
+                        MealIngredient("Herb omelette with tuna", "1 plate", 340),
+                        MealIngredient("Fresh garden salad with olive oil", "200g", 50)
+                    ),
+                    totalCalories = 390,
+                    proteinGrams = 28,
+                    carbsGrams = 14,
+                    fatGrams = 16
+                )
+            )
+        }
 
         val nutritionPlan = NutritionPlan(
             meals = meals,
@@ -519,156 +625,166 @@ class GeminiApiClient {
     }
 
     private fun getFallbackWorkoutPlan(profile: UserProfile): WorkoutPlan {
+        val lang = profile.language
+        val d1 = LanguageManager.dayMonday(lang)
+        val d2 = LanguageManager.dayTuesday(lang)
+        val d3 = LanguageManager.dayWednesday(lang)
+        val d4 = LanguageManager.dayThursday(lang)
+        val d5 = LanguageManager.dayFriday(lang)
+        val d6 = LanguageManager.daySaturday(lang)
+        val d7 = LanguageManager.daySunday(lang)
+        val restText = LanguageManager.restDayTitle(lang)
+
         val days = when (profile.gymLevel) {
             GymLevel.BEGINNER -> listOf(
                 DayWorkout(
-                    dayName = "الإثنين",
-                    title = "تمرين شامل للجسم كله (Full Body 1)",
+                    dayName = d1,
+                    title = if (lang == AppLanguage.AR) "تمرين شامل للجسم (Full Body 1)" else if (lang == AppLanguage.FR) "Entraînement Corps Complet (Full Body 1)" else "Full Body Workout (Part 1)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Squat (سكوات بالبار)", "الأفخاذ والأرداف", 3, "10-12", videoId = "ultWZbUMPL8"),
-                        Exercise("ex2", "Bench Press (بنش بريس الصدر)", "الصدر الأوسط", 3, "10-12", videoId = "rT7DgCr-3pg"),
-                        Exercise("ex3", "Lat Pulldown (سحب ظهر)", "الظهر العريض", 3, "10-12", videoId = "CAwf7n6Luuc"),
-                        Exercise("ex4", "Dumbbell Press Shoulders", "الأكتاف", 3, "12", videoId = "qEwKCR5JCog"),
-                        Exercise("ex5", "Plank Core (تمارين المعدة)", "المعدة والبطن", 3, "45 sec", videoId = "pSHjTRCQxIw")
+                        Exercise("ex1", "Barbell Squat", if (lang == AppLanguage.AR) "الأفخاذ والأرداف" else if (lang == AppLanguage.FR) "Cuisses & Fessiers" else "Quads & Glutes", 3, "10-12", videoId = "ultWZbUMPL8"),
+                        Exercise("ex2", "Bench Press", if (lang == AppLanguage.AR) "الصدر الأوسط" else if (lang == AppLanguage.FR) "Pectoraux" else "Mid Chest", 3, "10-12", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex3", "Lat Pulldown", if (lang == AppLanguage.AR) "الظهر العريض" else if (lang == AppLanguage.FR) "Grand Dorsal" else "Lats & Upper Back", 3, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex4", "Dumbbell Shoulder Press", if (lang == AppLanguage.AR) "الأكتاف" else if (lang == AppLanguage.FR) "Épaules" else "Shoulders", 3, "12", videoId = "qEwKCR5JCog"),
+                        Exercise("ex5", "Plank Core Hold", if (lang == AppLanguage.AR) "المعدة والبطن" else if (lang == AppLanguage.FR) "Abdominaux & Tronc" else "Core & Abs", 3, "45 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("الثلاثاء", "يوم راحة واسترخاء", true, emptyList()),
+                DayWorkout(d2, restText, true, emptyList()),
                 DayWorkout(
-                    dayName = "الأربعاء",
-                    title = "تمرين شامل للجسم كله (Full Body 2)",
+                    dayName = d3,
+                    title = if (lang == AppLanguage.AR) "تمرين شامل للجسم (Full Body 2)" else if (lang == AppLanguage.FR) "Entraînement Corps Complet (Full Body 2)" else "Full Body Workout (Part 2)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Romanian Deadlift (ديلفت روماني)", "الخلفيات والأرداف", 3, "10", videoId = "op9kVnSso6Q"),
-                        Exercise("ex7", "Incline Dumbbell Press", "الصدر العلوي", 3, "10-12", videoId = "8iPEnn-ltC8"),
-                        Exercise("ex8", "Seated Cable Row (تجديف للظهر)", "منتصف الظهر", 3, "12", videoId = "G8l_8chR5BE"),
-                        Exercise("ex9", "Biceps Cable Curl", "البايسبس", 3, "12-15", videoId = "ykJmrZ5v0Oo"),
-                        Exercise("ex10", "Triceps Rope Extension", "الترايسبس", 3, "12-15", videoId = "2-LAMcpzODU")
+                        Exercise("ex6", "Romanian Deadlift", if (lang == AppLanguage.AR) "الخلفيات والأرداف" else if (lang == AppLanguage.FR) "Ischio-jambiers & Fessiers" else "Hamstrings & Glutes", 3, "10", videoId = "op9kVnSso6Q"),
+                        Exercise("ex7", "Incline Dumbbell Press", if (lang == AppLanguage.AR) "الصدر العلوي" else if (lang == AppLanguage.FR) "Haut des Pectoraux" else "Upper Chest", 3, "10-12", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex8", "Seated Cable Row", if (lang == AppLanguage.AR) "منتصف الظهر" else if (lang == AppLanguage.FR) "Milieu du Dos" else "Mid Back", 3, "12", videoId = "G8l_8chR5BE"),
+                        Exercise("ex9", "Biceps Cable Curl", if (lang == AppLanguage.AR) "البايسبس" else if (lang == AppLanguage.FR) "Biceps" else "Biceps", 3, "12-15", videoId = "ykJmrZ5v0Oo"),
+                        Exercise("ex10", "Triceps Rope Extension", if (lang == AppLanguage.AR) "الترايسبس" else if (lang == AppLanguage.FR) "Triceps" else "Triceps", 3, "12-15", videoId = "2-LAMcpzODU")
                     )
                 ),
-                DayWorkout("الخميس", "يوم راحة واسترخاء", true, emptyList()),
+                DayWorkout(d4, restText, true, emptyList()),
                 DayWorkout(
-                    dayName = "الجمعة",
-                    title = "تمرين شامل للجسم كله (Full Body 3)",
+                    dayName = d5,
+                    title = if (lang == AppLanguage.AR) "تمرين شامل للجسم (Full Body 3)" else if (lang == AppLanguage.FR) "Entraînement Corps Complet (Full Body 3)" else "Full Body Workout (Part 3)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex11", "Leg Press Machine", "الأفخاذ والأرجل", 3, "12", videoId = "IZxyjW7MPJQ"),
-                        Exercise("ex12", "Dumbbell Flyes", "عضلات الصدر", 3, "12", videoId = "rT7DgCr-3pg"),
-                        Exercise("ex13", "Dumbbell Lateral Raises", "الكتف الجانبي", 4, "15", videoId = "3VcKaXpzqRo"),
-                        Exercise("ex14", "Plank Core Hold", "الجذع والبطن", 3, "60 sec", videoId = "pSHjTRCQxIw")
+                        Exercise("ex11", "Leg Press Machine", if (lang == AppLanguage.AR) "الأفخاذ والأرجل" else if (lang == AppLanguage.FR) "Presse à Cuisses" else "Quads & Legs", 3, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex12", "Dumbbell Flyes", if (lang == AppLanguage.AR) "عضلات الصدر" else if (lang == AppLanguage.FR) "Pectoraux Écartés" else "Chest Flyes", 3, "12", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex13", "Dumbbell Lateral Raises", if (lang == AppLanguage.AR) "الكتف الجانبي" else if (lang == AppLanguage.FR) "Élévations Latérales" else "Lateral Delts", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex14", "Plank Core Hold", if (lang == AppLanguage.AR) "الجذع والبطن" else if (lang == AppLanguage.FR) "Gainage Abdominal" else "Core Plank", 3, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("السبت", "يوم راحة واسترخاء", true, emptyList()),
-                DayWorkout("الأحد", "يوم راحة واسترخاء", true, emptyList())
+                DayWorkout(d6, restText, true, emptyList()),
+                DayWorkout(d7, restText, true, emptyList())
             )
 
             GymLevel.INTERMEDIATE -> listOf(
                 DayWorkout(
-                    dayName = "الإثنين",
-                    title = "الجزء العلوي من الجسم (Upper Body A)",
+                    dayName = d1,
+                    title = if (lang == AppLanguage.AR) "الجزء العلوي من الجسم (Upper Body A)" else if (lang == AppLanguage.FR) "Haut du Corps (Upper Body A)" else "Upper Body Power (Session A)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Bench Press", "الصدر", 4, "8-10", videoId = "rT7DgCr-3pg"),
-                        Exercise("ex2", "Bent Over Barbell Row", "الظهر", 4, "8-10", videoId = "G8l_8chR5BE"),
-                        Exercise("ex3", "Overhead Dumbbell Press", "الأكتاف", 3, "10-12", videoId = "qEwKCR5JCog"),
-                        Exercise("ex4", "Incline Dumbbell Curl", "البايسبس", 3, "12", videoId = "ykJmrZ5v0Oo"),
-                        Exercise("ex5", "Triceps Rope Pushdown", "الترايسبس", 3, "12", videoId = "2-LAMcpzODU")
+                        Exercise("ex1", "Barbell Bench Press", if (lang == AppLanguage.AR) "الصدر" else if (lang == AppLanguage.FR) "Pectoraux" else "Chest", 4, "8-10", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex2", "Bent Over Barbell Row", if (lang == AppLanguage.AR) "الظهر" else if (lang == AppLanguage.FR) "Dos & Grand Dorsal" else "Back & Lats", 4, "8-10", videoId = "G8l_8chR5BE"),
+                        Exercise("ex3", "Overhead Dumbbell Press", if (lang == AppLanguage.AR) "الأكتاف" else if (lang == AppLanguage.FR) "Épaules" else "Shoulders", 3, "10-12", videoId = "qEwKCR5JCog"),
+                        Exercise("ex4", "Incline Dumbbell Curl", if (lang == AppLanguage.AR) "البايسبس" else if (lang == AppLanguage.FR) "Biceps" else "Biceps", 3, "12", videoId = "ykJmrZ5v0Oo"),
+                        Exercise("ex5", "Triceps Rope Pushdown", if (lang == AppLanguage.AR) "الترايسبس" else if (lang == AppLanguage.FR) "Triceps" else "Triceps", 3, "12", videoId = "2-LAMcpzODU")
                     )
                 ),
                 DayWorkout(
-                    dayName = "الثلاثاء",
-                    title = "الجزء السفلي والبطن (Lower Body A)",
+                    dayName = d2,
+                    title = if (lang == AppLanguage.AR) "الجزء السفلي والبطن (Lower Body A)" else if (lang == AppLanguage.FR) "Bas du Corps (Lower Body A)" else "Lower Body & Core (Session A)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Barbell Back Squat", "الأفخاذ", 4, "8-10", videoId = "ultWZbUMPL8"),
-                        Exercise("ex7", "Leg Press Machine", "الأفخاذ والأرجل", 4, "12", videoId = "IZxyjW7MPJQ"),
-                        Exercise("ex8", "Romanian Deadlift", "الأفخاذ والأرداف", 3, "10-12", videoId = "op9kVnSso6Q"),
-                        Exercise("ex9", "Plank Core Hold", "عضلات البطن والجذع", 3, "60 sec", videoId = "pSHjTRCQxIw")
+                        Exercise("ex6", "Barbell Back Squat", if (lang == AppLanguage.AR) "الأفخاذ" else if (lang == AppLanguage.FR) "Cuisses & Fessiers" else "Quads & Glutes", 4, "8-10", videoId = "ultWZbUMPL8"),
+                        Exercise("ex7", "Leg Press Machine", if (lang == AppLanguage.AR) "الأفخاذ والأرجل" else if (lang == AppLanguage.FR) "Presse à Cuisses" else "Quads & Calves", 4, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex8", "Romanian Deadlift", if (lang == AppLanguage.AR) "الأفخاذ والأرداف" else if (lang == AppLanguage.FR) "Ischio-jambiers" else "Hamstrings & Glutes", 3, "10-12", videoId = "op9kVnSso6Q"),
+                        Exercise("ex9", "Plank Core Hold", if (lang == AppLanguage.AR) "عضلات البطن والجذع" else if (lang == AppLanguage.FR) "Gainage Abdominal" else "Core & Abs", 3, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("الأربعاء", "يوم راحة واسترخاء", true, emptyList()),
+                DayWorkout(d3, restText, true, emptyList()),
                 DayWorkout(
-                    dayName = "الخميس",
-                    title = "الجزء العلوي من الجسم (Upper Body B)",
+                    dayName = d4,
+                    title = if (lang == AppLanguage.AR) "الجزء العلوي من الجسم (Upper Body B)" else if (lang == AppLanguage.FR) "Haut du Corps (Upper Body B)" else "Upper Body Hypertrophy (Session B)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex10", "Incline Barbell Bench Press", "الصدر العلوي", 4, "8-10", videoId = "8iPEnn-ltC8"),
-                        Exercise("ex11", "Lat Pulldown Wide Grip", "الظهر العريض", 4, "10-12", videoId = "CAwf7n6Luuc"),
-                        Exercise("ex12", "Lateral Raises (رفرفة أكتاف)", "الكتف الجانبي", 4, "15", videoId = "3VcKaXpzqRo"),
-                        Exercise("ex13", "Biceps Barbell Curl", "البايسبس والساعد", 3, "12", videoId = "ykJmrZ5v0Oo")
+                        Exercise("ex10", "Incline Barbell Bench Press", if (lang == AppLanguage.AR) "الصدر العلوي" else if (lang == AppLanguage.FR) "Haut des Pectoraux" else "Upper Chest", 4, "8-10", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex11", "Lat Pulldown Wide Grip", if (lang == AppLanguage.AR) "الظهر العريض" else if (lang == AppLanguage.FR) "Grand Dorsal" else "Wide Lats", 4, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex12", "Lateral Raises", if (lang == AppLanguage.AR) "الكتف الجانبي" else if (lang == AppLanguage.FR) "Élévations Latérales" else "Side Delts", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex13", "Biceps Barbell Curl", if (lang == AppLanguage.AR) "البايسبس والساعد" else if (lang == AppLanguage.FR) "Biceps à la barre" else "Biceps & Forearms", 3, "12", videoId = "ykJmrZ5v0Oo")
                     )
                 ),
                 DayWorkout(
-                    dayName = "الجمعة",
-                    title = "الجزء السفلي والبطن (Lower Body B)",
+                    dayName = d5,
+                    title = if (lang == AppLanguage.AR) "الجزء السفلي والبطن (Lower Body B)" else if (lang == AppLanguage.FR) "Bas du Corps (Lower Body B)" else "Lower Body Strength (Session B)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex14", "Deadlift (الرفعة المميتة)", "الظهر السفلي والأرجل", 4, "6-8", videoId = "op9kVnSso6Q"),
-                        Exercise("ex15", "Barbell Squats", "الأفخاذ الأمامية", 3, "10-12", videoId = "ultWZbUMPL8"),
-                        Exercise("ex16", "Plank Core Exercise", "الجذع والبطن", 4, "45 sec", videoId = "pSHjTRCQxIw")
+                        Exercise("ex14", "Deadlift", if (lang == AppLanguage.AR) "الظهر السفلي والأرجل" else if (lang == AppLanguage.FR) "Soulevé de Terre" else "Lower Back & Legs", 4, "6-8", videoId = "op9kVnSso6Q"),
+                        Exercise("ex15", "Barbell Squats", if (lang == AppLanguage.AR) "الأفخاذ الأمامية" else if (lang == AppLanguage.FR) "Quadriceps" else "Quads", 3, "10-12", videoId = "ultWZbUMPL8"),
+                        Exercise("ex16", "Plank Core Exercise", if (lang == AppLanguage.AR) "الجذع والبطن" else if (lang == AppLanguage.FR) "Gainage Abdominal" else "Core & Obliques", 4, "45 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("السبت", "يوم راحة واسترخاء", true, emptyList()),
-                DayWorkout("الأحد", "يوم راحة واسترخاء", true, emptyList())
+                DayWorkout(d6, restText, true, emptyList()),
+                DayWorkout(d7, restText, true, emptyList())
             )
 
             GymLevel.ADVANCED -> listOf(
                 DayWorkout(
-                    dayName = "الإثنين",
-                    title = "يوم الدفع (Push Day - الصدر والأكتاف والتراي)",
+                    dayName = d1,
+                    title = if (lang == AppLanguage.AR) "يوم الدفع (Push Day - الصدر والأكتاف والتراي)" else if (lang == AppLanguage.FR) "Jour Poussée (Push Day - Pecs/Épaules/Triceps)" else "Push Day (Chest, Shoulders & Triceps)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex1", "Barbell Bench Press", "الصدر الرئيسي", 4, "6-8", videoId = "rT7DgCr-3pg"),
-                        Exercise("ex2", "Incline Dumbbell Press", "الصدر العلوي", 4, "8-10", videoId = "8iPEnn-ltC8"),
-                        Exercise("ex3", "Dumbbell Press Shoulders", "الأكتاف الأمامية", 4, "8-10", videoId = "qEwKCR5JCog"),
-                        Exercise("ex4", "Lateral Raises", "الأكتاف الجانبية", 4, "15", videoId = "3VcKaXpzqRo"),
-                        Exercise("ex5", "Triceps Rope Pushdown", "الترايسبس", 4, "10-12", videoId = "2-LAMcpzODU")
+                        Exercise("ex1", "Barbell Bench Press", if (lang == AppLanguage.AR) "الصدر الرئيسي" else if (lang == AppLanguage.FR) "Pectoraux" else "Main Chest", 4, "6-8", videoId = "rT7DgCr-3pg"),
+                        Exercise("ex2", "Incline Dumbbell Press", if (lang == AppLanguage.AR) "الصدر العلوي" else if (lang == AppLanguage.FR) "Haut des Pecs" else "Upper Chest", 4, "8-10", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex3", "Dumbbell Press Shoulders", if (lang == AppLanguage.AR) "الأكتاف الأمامية" else if (lang == AppLanguage.FR) "Épaules" else "Front Delts", 4, "8-10", videoId = "qEwKCR5JCog"),
+                        Exercise("ex4", "Lateral Raises", if (lang == AppLanguage.AR) "الأكتاف الجانبية" else if (lang == AppLanguage.FR) "Élévations Latérales" else "Side Delts", 4, "15", videoId = "3VcKaXpzqRo"),
+                        Exercise("ex5", "Triceps Rope Pushdown", if (lang == AppLanguage.AR) "الترايسبس" else if (lang == AppLanguage.FR) "Triceps" else "Triceps", 4, "10-12", videoId = "2-LAMcpzODU")
                     )
                 ),
                 DayWorkout(
-                    dayName = "الثلاثاء",
-                    title = "يوم السحب (Pull Day - الظهر والبايسبس)",
+                    dayName = d2,
+                    title = if (lang == AppLanguage.AR) "يوم السحب (Pull Day - الظهر والبايسبس)" else if (lang == AppLanguage.FR) "Jour Tirage (Pull Day - Dos & Biceps)" else "Pull Day (Back, Lats & Biceps)",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex6", "Deadlift (الرفعة المميتة)", "الظهر الكامل", 4, "6-8", videoId = "op9kVnSso6Q"),
-                        Exercise("ex7", "Wide Grip Lat Pulldown", "الظهر العريض", 4, "10-12", videoId = "CAwf7n6Luuc"),
-                        Exercise("ex8", "Barbell Bent Over Row", "منتصف الظهر", 4, "8-10", videoId = "G8l_8chR5BE"),
-                        Exercise("ex9", "Barbell Biceps Curl", "البايسبس", 4, "10-12", videoId = "ykJmrZ5v0Oo")
+                        Exercise("ex6", "Deadlift", if (lang == AppLanguage.AR) "الظهر الكامل" else if (lang == AppLanguage.FR) "Dos & Chaîne Postérieure" else "Full Back & Posterior Chain", 4, "6-8", videoId = "op9kVnSso6Q"),
+                        Exercise("ex7", "Wide Grip Lat Pulldown", if (lang == AppLanguage.AR) "الظهر العريض" else if (lang == AppLanguage.FR) "Grand Dorsal" else "Wide Lats", 4, "10-12", videoId = "CAwf7n6Luuc"),
+                        Exercise("ex8", "Barbell Bent Over Row", if (lang == AppLanguage.AR) "منتصف الظهر" else if (lang == AppLanguage.FR) "Milieu du Dos" else "Mid Back", 4, "8-10", videoId = "G8l_8chR5BE"),
+                        Exercise("ex9", "Barbell Biceps Curl", if (lang == AppLanguage.AR) "البايسبس" else if (lang == AppLanguage.FR) "Biceps" else "Biceps Peak", 4, "10-12", videoId = "ykJmrZ5v0Oo")
                     )
                 ),
                 DayWorkout(
-                    dayName = "الأربعاء",
-                    title = "يوم الأرجل (Legs Day - الأرجل والمعدة)",
+                    dayName = d3,
+                    title = if (lang == AppLanguage.AR) "يوم الأرجل (Legs Day - الأرجل والمعدة)" else if (lang == AppLanguage.FR) "Jour Jambes (Legs Day & Tronc)" else "Legs Day & Core Stability",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex10", "Barbell Squat (السكوات)", "الأفخاذ الأمامية", 4, "6-8", videoId = "ultWZbUMPL8"),
-                        Exercise("ex11", "Romanian Deadlift", "خلفيات الأرجل", 4, "8-10", videoId = "op9kVnSso6Q"),
-                        Exercise("ex12", "Leg Press Machine", "الأرجل", 3, "12", videoId = "IZxyjW7MPJQ"),
-                        Exercise("ex13", "Plank Core Stability", "عضلات البطن والجذع", 4, "60 sec", videoId = "pSHjTRCQxIw")
+                        Exercise("ex10", "Barbell Squat", if (lang == AppLanguage.AR) "الأفخاذ الأمامية" else if (lang == AppLanguage.FR) "Quadriceps & Fessiers" else "Quads & Glutes", 4, "6-8", videoId = "ultWZbUMPL8"),
+                        Exercise("ex11", "Romanian Deadlift", if (lang == AppLanguage.AR) "خلفيات الأرجل" else if (lang == AppLanguage.FR) "Ischio-jambiers" else "Hamstrings", 4, "8-10", videoId = "op9kVnSso6Q"),
+                        Exercise("ex12", "Leg Press Machine", if (lang == AppLanguage.AR) "الأرجل" else if (lang == AppLanguage.FR) "Presse à Cuisses" else "Full Legs", 3, "12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex13", "Plank Core Stability", if (lang == AppLanguage.AR) "عضلات البطن والجذع" else if (lang == AppLanguage.FR) "Gainage Tronc" else "Core & Abdominals", 4, "60 sec", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("الخميس", "يوم راحة واسترخاء", true, emptyList()),
+                DayWorkout(d4, restText, true, emptyList()),
                 DayWorkout(
-                    dayName = "الجمعة",
-                    title = "جزء علوي مستهدف (Upper Focus)",
+                    dayName = d5,
+                    title = if (lang == AppLanguage.AR) "جزء علوي مستهدف (Upper Focus)" else if (lang == AppLanguage.FR) "Haut du Corps Ciblé (Upper Focus)" else "Upper Body Hypertrophy",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex14", "Dumbbell Incline Bench Press", "الصدر", 4, "10-12"),
-                        Exercise("ex15", "Seated Cable Row", "الظهر", 4, "10-12"),
-                        Exercise("ex16", "Dumbbell Lateral Raises", "الأكتاف", 4, "15")
+                        Exercise("ex14", "Dumbbell Incline Bench Press", if (lang == AppLanguage.AR) "الصدر" else if (lang == AppLanguage.FR) "Pectoraux" else "Incline Chest", 4, "10-12", videoId = "8iPEnn-ltC8"),
+                        Exercise("ex15", "Seated Cable Row", if (lang == AppLanguage.AR) "الظهر" else if (lang == AppLanguage.FR) "Dos" else "Mid Lats", 4, "10-12", videoId = "G8l_8chR5BE"),
+                        Exercise("ex16", "Dumbbell Lateral Raises", if (lang == AppLanguage.AR) "الأكتاف" else if (lang == AppLanguage.FR) "Épaules" else "Side Delts", 4, "15", videoId = "3VcKaXpzqRo")
                     )
                 ),
                 DayWorkout(
-                    dayName = "السبت",
-                    title = "أرجل وبطن متقدم (Legs & Core)",
+                    dayName = d6,
+                    title = if (lang == AppLanguage.AR) "أرجل وبطن متقدم (Legs & Core)" else if (lang == AppLanguage.FR) "Jambes & Abdominaux (Legs & Core)" else "Legs & Core Conditioning",
                     isRestDay = false,
                     exercises = listOf(
-                        Exercise("ex17", "Hack Squat / Leg Press", "الأفخاذ", 4, "10-12"),
-                        Exercise("ex18", "Lying Leg Curls", "الخلفيات", 4, "12"),
-                        Exercise("ex19", "Abdominal Cable Crunches", "البطن", 4, "15")
+                        Exercise("ex17", "Hack Squat / Leg Press", if (lang == AppLanguage.AR) "الأفخاذ" else if (lang == AppLanguage.FR) "Cuisses" else "Quads", 4, "10-12", videoId = "IZxyjW7MPJQ"),
+                        Exercise("ex18", "Lying Leg Curls", if (lang == AppLanguage.AR) "الخلفيات" else if (lang == AppLanguage.FR) "Ischio-jambiers" else "Hamstrings", 4, "12", videoId = "op9kVnSso6Q"),
+                        Exercise("ex19", "Abdominal Cable Crunches", if (lang == AppLanguage.AR) "البطن" else if (lang == AppLanguage.FR) "Abdominaux" else "Abs Crunches", 4, "15", videoId = "pSHjTRCQxIw")
                     )
                 ),
-                DayWorkout("الأحد", "يوم راحة واسترخاء", true, emptyList())
+                DayWorkout(d7, restText, true, emptyList())
             )
         }
 
