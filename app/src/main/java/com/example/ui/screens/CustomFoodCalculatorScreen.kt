@@ -3,8 +3,6 @@ package com.example.ui.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,6 +35,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.data.model.AppLanguage
 import com.example.data.model.FoodCategory
 import com.example.data.model.SelectedFoodItem
+import com.example.data.model.ServingUnit
 import com.example.data.model.WholeFoodItem
 import com.example.data.model.WholeFoodsRepository
 import com.example.localization.LanguageManager
@@ -55,7 +54,7 @@ fun CustomFoodCalculatorScreen(
     var selectedCategory by remember { mutableStateOf(FoodCategory.ALL) }
     var searchQuery by remember { mutableStateOf("") }
     
-    // Map of selected whole food IDs to their quantity in grams
+    // Map of selected whole food IDs to their quantity (grams or ml)
     var selectedFoodItemsMap by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
     
     // Dialog state for editing portion
@@ -64,7 +63,7 @@ fun CustomFoodCalculatorScreen(
 
     val allFoods = remember { WholeFoodsRepository.foods }
 
-    // Filter foods by category and search
+    // Filter foods by category and search query
     val filteredFoods = remember(selectedCategory, searchQuery, language) {
         allFoods.filter { food ->
             val matchesCategory = when (selectedCategory) {
@@ -83,9 +82,9 @@ fun CustomFoodCalculatorScreen(
 
     // Convert map to SelectedFoodItem list for calculations
     val selectedList = remember(selectedFoodItemsMap) {
-        selectedFoodItemsMap.mapNotNull { (id, grams) ->
+        selectedFoodItemsMap.mapNotNull { (id, quantity) ->
             val food = allFoods.find { it.id == id }
-            if (food != null && grams > 0) SelectedFoodItem(food, grams) else null
+            if (food != null && quantity > 0) SelectedFoodItem(food, quantity) else null
         }
     }
 
@@ -94,17 +93,18 @@ fun CustomFoodCalculatorScreen(
     val totalProtein = remember(selectedList) { selectedList.sumOf { it.protein.toDouble() }.toFloat() }
     val totalCarbs = remember(selectedList) { selectedList.sumOf { it.carbs.toDouble() }.toFloat() }
     val totalFat = remember(selectedList) { selectedList.sumOf { it.fat.toDouble() }.toFloat() }
-    val totalGrams = remember(selectedList) { selectedList.sumOf { it.quantityGrams } }
+    val totalQuantity = remember(selectedList) { selectedList.sumOf { it.quantityGrams } }
 
-    val totalMacroGrams = (totalProtein + totalCarbs + totalFat).coerceAtLeast(1f)
-    val proteinPercent = ((totalProtein / totalMacroGrams) * 100).roundToInt()
-    val carbsPercent = ((totalCarbs / totalMacroGrams) * 100).roundToInt()
-    val fatPercent = ((totalFat / totalMacroGrams) * 100).roundToInt()
+    val totalMacroGrams = (totalProtein + totalCarbs + totalFat).coerceAtLeast(0.1f)
+    val proteinPercent = if (totalMacroGrams > 0.5f) ((totalProtein / totalMacroGrams) * 100).roundToInt() else 0
+    val carbsPercent = if (totalMacroGrams > 0.5f) ((totalCarbs / totalMacroGrams) * 100).roundToInt() else 0
+    val fatPercent = if (totalMacroGrams > 0.5f) (100 - proteinPercent - carbsPercent).coerceAtLeast(0) else 0
 
-    // Portion editing dialog
+    // Serving Unit & Quantity Dialog
     if (activePortionItem != null) {
         val food = activePortionItem!!
-        val currentGrams = selectedFoodItemsMap[food.id] ?: food.defaultServingGrams
+        val currentQty = selectedFoodItemsMap[food.id] ?: food.defaultServingGrams
+        val unitLabel = food.unitLabel(language)
 
         Dialog(onDismissRequest = { activePortionItem = null }) {
             Surface(
@@ -112,7 +112,7 @@ fun CustomFoodCalculatorScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .border(1.dp, colors.primaryAccent.copy(alpha = 0.5f), RoundedCornerShape(24.dp)),
+                    .border(1.5.dp, colors.primaryAccent.copy(alpha = 0.5f), RoundedCornerShape(24.dp)),
                 color = colors.cardBackgroundOpaque
             ) {
                 Column(
@@ -131,7 +131,7 @@ fun CustomFoodCalculatorScreen(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "${LanguageManager.adjustQuantity(language)} (${LanguageManager.gramsUnit(language)})",
+                        text = "${LanguageManager.adjustQuantity(language)} ($unitLabel)",
                         fontSize = 13.sp,
                         color = colors.textSecondary,
                         modifier = Modifier.padding(top = 4.dp)
@@ -139,7 +139,7 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Direct input field
+                    // Direct input field with unit label
                     OutlinedTextField(
                         value = portionInputText,
                         onValueChange = { input ->
@@ -147,7 +147,16 @@ fun CustomFoodCalculatorScreen(
                                 portionInputText = input
                             }
                         },
-                        label = { Text(LanguageManager.gramsUnit(language)) },
+                        label = { Text(unitLabel) },
+                        trailingIcon = {
+                            Text(
+                                text = unitLabel,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.primaryAccent,
+                                modifier = Modifier.padding(end = 12.dp)
+                            )
+                        },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
@@ -156,7 +165,7 @@ fun CustomFoodCalculatorScreen(
                         singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag("input_portion_grams"),
+                            .testTag("input_portion_quantity"),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = colors.primaryAccent,
                             unfocusedBorderColor = colors.cardBorder,
@@ -167,29 +176,35 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Quick portion chips (50g, 100g, 150g, 200g, 250g, 300g)
+                    // Quick portion chips tailored to solids (g) vs liquids (ml)
+                    val quickChips = if (food.unit == ServingUnit.ML) {
+                        listOf(10, 15, 30, 50, 100, 200, 250)
+                    } else {
+                        listOf(30, 50, 100, 150, 200, 250, 300)
+                    }
+
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        val quickChips = listOf(50, 100, 150, 200, 250, 300)
-                        items(quickChips) { g ->
+                        items(quickChips) { qty ->
+                            val isChipSelected = portionInputText == qty.toString()
                             Surface(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(12.dp))
                                     .border(
                                         1.dp,
-                                        if (portionInputText == g.toString()) colors.primaryAccent else colors.cardBorder,
+                                        if (isChipSelected) colors.primaryAccent else colors.cardBorder,
                                         RoundedCornerShape(12.dp)
                                     )
-                                    .clickable { portionInputText = g.toString() },
-                                color = if (portionInputText == g.toString()) colors.primaryAccent.copy(alpha = 0.2f) else colors.surface
+                                    .clickable { portionInputText = qty.toString() },
+                                color = if (isChipSelected) colors.primaryAccent.copy(alpha = 0.2f) else colors.surface
                             ) {
                                 Text(
-                                    text = "$g ${LanguageManager.gramsUnit(language)}",
+                                    text = "$qty $unitLabel",
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (portionInputText == g.toString()) colors.primaryAccent else colors.textPrimary,
+                                    color = if (isChipSelected) colors.primaryAccent else colors.textPrimary,
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                                 )
                             }
@@ -198,12 +213,12 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Live macros for this portion
-                    val typedGrams = portionInputText.toIntOrNull() ?: currentGrams
-                    val portionCals = ((food.caloriesPer100g * typedGrams) / 100f).toInt()
-                    val portionP = (food.proteinPer100g * typedGrams) / 100f
-                    val portionC = (food.carbsPer100g * typedGrams) / 100f
-                    val portionF = (food.fatPer100g * typedGrams) / 100f
+                    // Live macros preview for this portion
+                    val typedQty = portionInputText.toIntOrNull() ?: currentQty
+                    val portionCals = ((food.caloriesPer100g * typedQty) / 100f).toInt()
+                    val portionP = (food.proteinPer100g * typedQty) / 100f
+                    val portionC = (food.carbsPer100g * typedQty) / 100f
+                    val portionF = (food.fatPer100g * typedQty) / 100f
 
                     Surface(
                         modifier = Modifier
@@ -260,10 +275,10 @@ fun CustomFoodCalculatorScreen(
                         // Save portion button
                         Button(
                             onClick = {
-                                val grams = portionInputText.toIntOrNull() ?: food.defaultServingGrams
-                                if (grams > 0) {
+                                val qty = portionInputText.toIntOrNull() ?: food.defaultServingGrams
+                                if (qty > 0) {
                                     val newMap = selectedFoodItemsMap.toMutableMap()
-                                    newMap[food.id] = grams
+                                    newMap[food.id] = qty
                                     selectedFoodItemsMap = newMap
                                 }
                                 activePortionItem = null
@@ -349,7 +364,7 @@ fun CustomFoodCalculatorScreen(
             }
         }
 
-        // 2. Six Categorized Selection Chips
+        // 2. 7 Categorized Selection Tabs/Chips
         item {
             LazyRow(
                 modifier = Modifier
@@ -362,10 +377,11 @@ fun CustomFoodCalculatorScreen(
                     FoodCategory.ALL to LanguageManager.categoryAll(language),
                     FoodCategory.VEGETABLES to LanguageManager.categoryVegetables(language),
                     FoodCategory.FRUITS to LanguageManager.categoryFruits(language),
-                    FoodCategory.MEAT_POULTRY to LanguageManager.categoryMeatPoultry(language),
-                    FoodCategory.FISH_SEAFOOD to LanguageManager.categoryFishSeafood(language),
-                    FoodCategory.GRAINS_LEGUMES to LanguageManager.categoryGrainsLegumes(language),
-                    FoodCategory.SUPPLEMENTS_NUTS to LanguageManager.categorySupplementsNuts(language)
+                    FoodCategory.MEAT_POULTRY_FISH to LanguageManager.categoryMeatPoultryFish(language),
+                    FoodCategory.LEGUMES_GRAINS to LanguageManager.categoryLegumesGrains(language),
+                    FoodCategory.DAIRY to LanguageManager.categoryDairy(language),
+                    FoodCategory.NUTS_DRIED_FRUITS to LanguageManager.categoryNutsDriedFruits(language),
+                    FoodCategory.OILS_HEALTHY_FATS to LanguageManager.categoryOilsHealthyFats(language)
                 )
 
                 items(categories) { (cat, label) ->
@@ -394,12 +410,13 @@ fun CustomFoodCalculatorScreen(
             }
         }
 
-        // 3. Selectable Whole Foods Cards
+        // 3. Whole Foods Selection Cards
         item {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
                 filteredFoods.forEach { food ->
                     val isSelected = selectedFoodItemsMap.containsKey(food.id)
-                    val currentGrams = selectedFoodItemsMap[food.id] ?: 0
+                    val currentQty = selectedFoodItemsMap[food.id] ?: 0
+                    val unitLabel = food.unitLabel(language)
 
                     Surface(
                         modifier = Modifier
@@ -424,7 +441,7 @@ fun CustomFoodCalculatorScreen(
                                 .padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Food Emoji & Portion Badge
+                            // Emoji
                             Box(
                                 modifier = Modifier
                                     .size(50.dp)
@@ -460,7 +477,7 @@ fun CustomFoodCalculatorScreen(
                                             color = colors.primaryAccent
                                         ) {
                                             Text(
-                                                text = "$currentGrams ${LanguageManager.gramsUnit(language)}",
+                                                text = "$currentQty $unitLabel",
                                                 fontSize = 11.sp,
                                                 fontWeight = FontWeight.Black,
                                                 color = Color.Black,
@@ -481,7 +498,7 @@ fun CustomFoodCalculatorScreen(
 
                                 Spacer(modifier = Modifier.height(4.dp))
 
-                                // Macros per 100g
+                                // Macros per 100g or 100ml
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     verticalAlignment = Alignment.CenterVertically
@@ -535,7 +552,7 @@ fun CustomFoodCalculatorScreen(
             }
         }
 
-        // 4. "My Custom Plate" Section
+        // 4. "Selected Meal Items" Section
         item {
             Column(
                 modifier = Modifier
@@ -585,6 +602,9 @@ fun CustomFoodCalculatorScreen(
                     }
                 } else {
                     selectedList.forEach { item ->
+                        val unitLabel = item.foodItem.unitLabel(language)
+                        val step = if (item.foodItem.unit == ServingUnit.ML) 15 else 25
+
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -615,13 +635,13 @@ fun CustomFoodCalculatorScreen(
                                     )
                                 }
 
-                                // Quick increment/decrement buttons
+                                // Increment/Decrement buttons
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     IconButton(
                                         onClick = {
-                                            val newGrams = (item.quantityGrams - 25).coerceAtLeast(0)
+                                            val newQty = (item.quantityGrams - step).coerceAtLeast(0)
                                             val newMap = selectedFoodItemsMap.toMutableMap()
-                                            if (newGrams <= 0) newMap.remove(item.foodItem.id) else newMap[item.foodItem.id] = newGrams
+                                            if (newQty <= 0) newMap.remove(item.foodItem.id) else newMap[item.foodItem.id] = newQty
                                             selectedFoodItemsMap = newMap
                                         },
                                         modifier = Modifier.size(32.dp)
@@ -630,8 +650,8 @@ fun CustomFoodCalculatorScreen(
                                     }
 
                                     Text(
-                                        text = "${item.quantityGrams}g",
-                                        fontSize = 13.sp,
+                                        text = "${item.quantityGrams} $unitLabel",
+                                        fontSize = 12.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = colors.textPrimary,
                                         modifier = Modifier.padding(horizontal = 4.dp)
@@ -639,9 +659,9 @@ fun CustomFoodCalculatorScreen(
 
                                     IconButton(
                                         onClick = {
-                                            val newGrams = item.quantityGrams + 25
+                                            val newQty = item.quantityGrams + step
                                             val newMap = selectedFoodItemsMap.toMutableMap()
-                                            newMap[item.foodItem.id] = newGrams
+                                            newMap[item.foodItem.id] = newQty
                                             selectedFoodItemsMap = newMap
                                         },
                                         modifier = Modifier.size(32.dp)
@@ -656,7 +676,7 @@ fun CustomFoodCalculatorScreen(
             }
         }
 
-        // 5. Dynamic Real-Time Total Calories & Macro Summary Card
+        // 5. Clean Prominent "Meal Summary" (ملخص الوجبة) Card
         item {
             Surface(
                 modifier = Modifier
@@ -678,14 +698,14 @@ fun CustomFoodCalculatorScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = LanguageManager.foodSummaryHeader(language),
+                            text = LanguageManager.mealSummaryTitle(language),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Black,
                             color = colors.textPrimary
                         )
 
                         Text(
-                            text = LanguageManager.totalWeightSelected(totalGrams, language),
+                            text = LanguageManager.totalWeightSelected(totalQuantity, language),
                             fontSize = 11.sp,
                             color = colors.primaryAccent,
                             fontWeight = FontWeight.Bold
@@ -694,7 +714,7 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    // Total Calories Big Banner
+                    // Total Calories (إجمالي السعرات الحرارية) Banner
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -704,20 +724,27 @@ fun CustomFoodCalculatorScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = LanguageManager.totalMealCalories(language),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colors.textPrimary
-                            )
+                            Column {
+                                Text(
+                                    text = LanguageManager.totalCaloriesLabel(language),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.textPrimary
+                                )
+                                Text(
+                                    text = LanguageManager.totalMealCalories(language),
+                                    fontSize = 11.sp,
+                                    color = colors.textSecondary
+                                )
+                            }
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Text(
                                     text = "$totalCalories",
-                                    fontSize = 26.sp,
+                                    fontSize = 28.sp,
                                     fontWeight = FontWeight.Black,
                                     color = colors.primaryAccent
                                 )
@@ -734,7 +761,7 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Macro distribution percentage bar
+                    // Macros Title
                     Text(
                         text = LanguageManager.macroBreakdown(language),
                         fontSize = 12.sp,
@@ -744,6 +771,7 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(6.dp))
 
+                    // Real-Time Macro Percentage Proportion Bar
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -751,7 +779,7 @@ fun CustomFoodCalculatorScreen(
                             .clip(CircleShape)
                             .background(colors.surface)
                     ) {
-                        if (totalMacroGrams > 1f) {
+                        if (totalMacroGrams > 0.5f) {
                             Box(
                                 modifier = Modifier
                                     .weight(proteinPercent.coerceAtLeast(1).toFloat())
@@ -775,12 +803,12 @@ fun CustomFoodCalculatorScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // 3 Macro metric boxes
+                    // 3 Metric Cards: Protein, Carbs, Fats (البروتين، الكربوهيدرات، والدهون)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Protein
+                        // Protein (البروتين)
                         Surface(
                             modifier = Modifier
                                 .weight(1f)
@@ -811,7 +839,7 @@ fun CustomFoodCalculatorScreen(
                             }
                         }
 
-                        // Carbs
+                        // Carbs (الكربوهيدرات)
                         Surface(
                             modifier = Modifier
                                 .weight(1f)
@@ -842,7 +870,7 @@ fun CustomFoodCalculatorScreen(
                             }
                         }
 
-                        // Fats
+                        // Fats (الدهون)
                         Surface(
                             modifier = Modifier
                                 .weight(1f)

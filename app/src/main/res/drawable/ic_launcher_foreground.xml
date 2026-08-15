@@ -1,13 +1,9 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- Dumbbell / Energy Midad Icon -->
-    <path
-        android:fillColor="#10B981"
-        android:pathData="M32,42h10v24H32z M24,46h8v16h-8z M66,42h10v24H66z M76,46h8v16h-8z M42,51h24v6H42z M54,26c-3,6-12,12-12,18h24c0-6-9-12-12-18z" />
-    <path
-        android:fillColor="#00FF87"
-        android:pathData="M54,28c-2,4-8,8-8,12h16c0-4-6-8-8-12z" />
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="66dp"
+        android:height="66dp"
+        android:drawable="@drawable/ic_basil_head"
+        android:gravity="center" />
+</layer-list>
+

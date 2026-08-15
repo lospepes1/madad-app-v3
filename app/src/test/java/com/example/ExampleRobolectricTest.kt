@@ -106,4 +106,47 @@ class ExampleRobolectricTest {
     org.junit.Assert.assertEquals("https://www.instagram.com/aminlgeek/", intent.data.toString())
     org.junit.Assert.assertEquals(android.content.Intent.ACTION_VIEW, intent.action)
   }
+
+  @Test
+  fun `meal calculator supports all 7 required food categories and units`() {
+    val foods = com.example.data.model.WholeFoodsRepository.foods
+    val categories = foods.map { it.category }.toSet()
+
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.VEGETABLES))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.FRUITS))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.MEAT_POULTRY_FISH))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.LEGUMES_GRAINS))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.DAIRY))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.NUTS_DRIED_FRUITS))
+    org.junit.Assert.assertTrue(categories.contains(com.example.data.model.FoodCategory.OILS_HEALTHY_FATS))
+
+    // Check serving units
+    val milk = foods.first { it.id == "fresh_whole_milk" }
+    val oliveOil = foods.first { it.id == "extra_virgin_olive_oil" }
+    val chicken = foods.first { it.id == "chicken_breast" }
+
+    org.junit.Assert.assertEquals(com.example.data.model.ServingUnit.ML, milk.unit)
+    org.junit.Assert.assertEquals(com.example.data.model.ServingUnit.ML, oliveOil.unit)
+    org.junit.Assert.assertEquals(com.example.data.model.ServingUnit.GRAMS, chicken.unit)
+
+    org.junit.Assert.assertEquals("مل", milk.unitLabel(com.example.data.model.AppLanguage.AR))
+    org.junit.Assert.assertEquals("غرام", chicken.unitLabel(com.example.data.model.AppLanguage.AR))
+    org.junit.Assert.assertEquals("ml", milk.unitLabel(com.example.data.model.AppLanguage.EN))
+    org.junit.Assert.assertEquals("g", chicken.unitLabel(com.example.data.model.AppLanguage.EN))
+  }
+
+  @Test
+  fun `selected food items calculate exact calories and macros correctly`() {
+    val foods = com.example.data.model.WholeFoodsRepository.foods
+    val chicken = foods.first { it.id == "chicken_breast" }
+    val oats = foods.first { it.id == "oats_whole" }
+
+    val selectedChicken = com.example.data.model.SelectedFoodItem(chicken, 200) // 200g chicken: 165*2 = 330 kcal, 31*2 = 62g protein
+    val selectedOats = com.example.data.model.SelectedFoodItem(oats, 50) // 50g oats: 389*0.5 = 194 kcal, 16.9*0.5 = 8.45g protein
+
+    org.junit.Assert.assertEquals(330, selectedChicken.calories)
+    org.junit.Assert.assertEquals(62.0f, selectedChicken.protein, 0.01f)
+    org.junit.Assert.assertEquals(194, selectedOats.calories)
+    org.junit.Assert.assertEquals(8.45f, selectedOats.protein, 0.01f)
+  }
 }

@@ -5,14 +5,20 @@ enum class FoodOrigin {
     ANIMAL
 }
 
+enum class ServingUnit {
+    GRAMS,
+    ML
+}
+
 enum class FoodCategory {
     ALL,
-    VEGETABLES,             // الخضروات
-    FRUITS,                 // الفواكه
-    MEAT_POULTRY,           // اللحوم والدواجن
-    FISH_SEAFOOD,           // الأسماك والماكولات البحرية
-    GRAINS_LEGUMES,         // البقوليات والحبوب
-    SUPPLEMENTS_NUTS        // المكملات الطبيعية والمكسرات
+    VEGETABLES,             // الخضروات بأنواعها
+    FRUITS,                 // الفواكه بأنواعها
+    MEAT_POULTRY_FISH,      // اللحوم، الدواجن والأسماك
+    LEGUMES_GRAINS,         // البقوليات والحبوب
+    DAIRY,                  // الحليب ومشتقاته
+    NUTS_DRIED_FRUITS,      // المكسرات والفواكه الجافة
+    OILS_HEALTHY_FATS       // الزيوت والدهون الصحية
 }
 
 data class WholeFoodItem(
@@ -33,7 +39,8 @@ data class WholeFoodItem(
     val healthBenefitEn: String,
     val healthBenefitFr: String,
     val emoji: String,
-    val defaultServingGrams: Int = 100
+    val defaultServingGrams: Int = 100,
+    val unit: ServingUnit = ServingUnit.GRAMS
 ) {
     fun localizedName(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> nameAr
@@ -51,6 +58,19 @@ data class WholeFoodItem(
         AppLanguage.AR -> healthBenefitAr
         AppLanguage.FR -> healthBenefitFr
         AppLanguage.EN -> healthBenefitEn
+    }
+
+    fun unitLabel(lang: AppLanguage): String = when (unit) {
+        ServingUnit.GRAMS -> when (lang) {
+            AppLanguage.AR -> "غرام"
+            AppLanguage.FR -> "g"
+            AppLanguage.EN -> "g"
+        }
+        ServingUnit.ML -> when (lang) {
+            AppLanguage.AR -> "مل"
+            AppLanguage.FR -> "ml"
+            AppLanguage.EN -> "ml"
+        }
     }
 }
 
@@ -87,7 +107,9 @@ data class AiMealCalculationResult(
 
 object WholeFoodsRepository {
     val foods: List<WholeFoodItem> = listOf(
-        // 1. VEGETABLES (الخضروات)
+        // ==========================================
+        // 1. VEGETABLES (الخضروات بأنواعها)
+        // ==========================================
         WholeFoodItem(
             id = "fresh_spinach",
             nameAr = "سبانخ طازجة خضراء",
@@ -106,7 +128,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Natural nitrates expand blood vessels and boost muscular pump.",
             healthBenefitFr = "Améliore la vasodilatation et l'afflux sanguin à l'effort.",
             emoji = "🥬",
-            defaultServingGrams = 100
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_broccoli",
@@ -126,7 +149,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Powerful antioxidant reducing inflammation post-workout.",
             healthBenefitFr = "Antioxydant puissant qui réduit l'inflammation musculaire.",
             emoji = "🥦",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "sweet_potato",
@@ -146,7 +170,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Complex slow-digesting carbs replenishing muscle glycogen.",
             healthBenefitFr = "Glucide complexe idéal pour restaurer le glycogène musculaire.",
             emoji = "🍠",
-            defaultServingGrams = 200
+            defaultServingGrams = 200,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_tomato",
@@ -166,11 +191,12 @@ object WholeFoodsRepository {
             healthBenefitEn = "Lycopene antioxidant supporting cellular and heart health.",
             healthBenefitFr = "Riche en lycopène pour la santé cardiovasculaire et cellulaire.",
             emoji = "🍅",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_cucumber",
-            nameAr = "خيار طازج",
+            nameAr = "خيار طازج مقرمش",
             nameEn = "Fresh Crisp Cucumber",
             nameFr = "Concombre Frais",
             origin = FoodOrigin.PLANT,
@@ -186,11 +212,12 @@ object WholeFoodsRepository {
             healthBenefitEn = "Deep cellular hydration and assists digestion.",
             healthBenefitFr = "Hydratation profonde et favorise le confort digestif.",
             emoji = "🥒",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "roasted_peppers",
-            nameAr = "فلفل مشوي / سلطة مشوية",
+            nameAr = "فلفل رومي مشوي / ملون",
             nameEn = "Roasted Bell Peppers",
             nameFr = "Poivrons Grillés",
             origin = FoodOrigin.PLANT,
@@ -206,10 +233,34 @@ object WholeFoodsRepository {
             healthBenefitEn = "Gently stimulates metabolism and delivers mega Vitamin C.",
             healthBenefitFr = "Stimule le métabolisme et apporte une forte dose de vitamine C.",
             emoji = "🫑",
-            defaultServingGrams = 120
+            defaultServingGrams = 120,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "fresh_carrots",
+            nameAr = "جزر طازج مقرمش",
+            nameEn = "Fresh Crisp Carrots",
+            nameFr = "Carottes Fraîches",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.VEGETABLES,
+            caloriesPer100g = 41,
+            proteinPer100g = 0.9f,
+            carbsPer100g = 9.6f,
+            fatPer100g = 0.2f,
+            vitaminsAndMineralsAr = "بيتا كاروتين، فيتامين A، فيتامين K1، بوتاسيوم",
+            vitaminsAndMineralsEn = "Beta-Carotene, Vitamin A, Vitamin K1, Potassium",
+            vitaminsAndMineralsFr = "Bêta-carotène, Vitamine A, Vitamine K1, Potassium",
+            healthBenefitAr = "يدعم صحة البصر والأنسجة العضلية ويمنح أليافاً مشبعة.",
+            healthBenefitEn = "Supports eye and cellular health with satisfying dietary fiber.",
+            healthBenefitFr = "Favorise la santé visuelle et procure des fibres rassasiantes.",
+            emoji = "🥕",
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
         ),
 
-        // 2. FRUITS (الفواكه)
+        // ==========================================
+        // 2. FRUITS (الفواكه بأنواعها)
+        // ==========================================
         WholeFoodItem(
             id = "dates_degla",
             nameAr = "تمر دقلة نور طبيعي",
@@ -228,7 +279,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Instant pre-workout energy and potassium preventing cramps.",
             healthBenefitFr = "Énergie rapide avant l'effort et prévention des crampes.",
             emoji = "🌴",
-            defaultServingGrams = 50
+            defaultServingGrams = 50,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_banana",
@@ -248,7 +300,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Replenishes electrolytes and supports rapid recovery.",
             healthBenefitFr = "Reconstitue les électrolytes et favorise la récupération.",
             emoji = "🍌",
-            defaultServingGrams = 120
+            defaultServingGrams = 120,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "berries_mix",
@@ -268,7 +321,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Low glycemic index fruit reducing muscle oxidative stress.",
             healthBenefitFr = "Faible index glycémique réduisant le stress oxydatif.",
             emoji = "🫐",
-            defaultServingGrams = 100
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_apple",
@@ -288,7 +342,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Stabilizes blood sugar and promotes lasting fullness.",
             healthBenefitFr = "Régule la glycémie et procure une sensation de satiété.",
             emoji = "🍎",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_orange",
@@ -308,17 +363,20 @@ object WholeFoodsRepository {
             healthBenefitEn = "Strengthens immunity and enhances dietary iron absorption.",
             healthBenefitFr = "Renforce l'immunité et optimise l'absorption du fer.",
             emoji = "🍊",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
 
-        // 3. MEATS & POULTRY (اللحوم والدواجن)
+        // ==========================================
+        // 3. MEATS, POULTRY & FISH (اللحوم، الدواجن والأسماك)
+        // ==========================================
         WholeFoodItem(
             id = "chicken_breast",
             nameAr = "صدر دجاج طازج مشوي",
             nameEn = "Fresh Grilled Chicken Breast",
             nameFr = "Blanc de Poulet Grillé",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.MEAT_POULTRY,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 165,
             proteinPer100g = 31.0f,
             carbsPer100g = 0.0f,
@@ -330,7 +388,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "High-purity protein source for lean muscle growth and repair.",
             healthBenefitFr = "Source de protéines pures pour le développement musculaire sans gras.",
             emoji = "🍗",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "lean_beef",
@@ -338,7 +397,7 @@ object WholeFoodsRepository {
             nameEn = "Lean Beef Steak",
             nameFr = "Bifteck de Bœuf Maigre",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.MEAT_POULTRY,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 215,
             proteinPer100g = 26.5f,
             carbsPer100g = 0.0f,
@@ -350,7 +409,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Boosts strength, hemoglobin levels, and muscular endurance.",
             healthBenefitFr = "Améliore la force physique et l'endurance musculaire.",
             emoji = "🥩",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "turkey_breast",
@@ -358,7 +418,7 @@ object WholeFoodsRepository {
             nameEn = "Turkey Breast Cutlet",
             nameFr = "Escalope de Dinde",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.MEAT_POULTRY,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 135,
             proteinPer100g = 30.0f,
             carbsPer100g = 0.0f,
@@ -370,7 +430,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Ultra-lean high-protein meat optimal for cutting phases.",
             healthBenefitFr = "Viande ultra maigre et riche en protéines, parfaite en sèche.",
             emoji = "🦃",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "whole_eggs",
@@ -378,7 +439,7 @@ object WholeFoodsRepository {
             nameEn = "Whole Natural Eggs",
             nameFr = "Œufs Entiers Naturels",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.MEAT_POULTRY,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 143,
             proteinPer100g = 12.6f,
             carbsPer100g = 0.8f,
@@ -390,7 +451,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Gold standard protein bioavailability with healthy hormone fats.",
             healthBenefitFr = "Protéines de haute valeur biologique et lipides pour les hormones.",
             emoji = "🥚",
-            defaultServingGrams = 100
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "egg_whites",
@@ -398,7 +460,7 @@ object WholeFoodsRepository {
             nameEn = "Pure Egg Whites",
             nameFr = "Blancs d'Œufs Purs",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.MEAT_POULTRY,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 52,
             proteinPer100g = 11.0f,
             carbsPer100g = 0.7f,
@@ -410,17 +472,16 @@ object WholeFoodsRepository {
             healthBenefitEn = "Pure fat-free protein to bump macro intake without excess calories.",
             healthBenefitFr = "Protéine pure sans lipides pour maximiser l'apport sans calories.",
             emoji = "🍳",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
-
-        // 4. FISH & SEAFOOD (الأسماك والماكولات البحرية)
         WholeFoodItem(
             id = "fresh_salmon",
             nameAr = "سمك السلمون الطازج",
             nameEn = "Wild Salmon Fillet",
             nameFr = "Filet de Saumon Frais",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.FISH_SEAFOOD,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 208,
             proteinPer100g = 22.0f,
             carbsPer100g = 0.0f,
@@ -432,7 +493,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Potent anti-inflammatory for joints, brain, and heart health.",
             healthBenefitFr = "Anti-inflammatoire puissant pour les articulations et le cœur.",
             emoji = "🐟",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "tuna_fillet",
@@ -440,7 +502,7 @@ object WholeFoodsRepository {
             nameEn = "Natural Canned Tuna in Water",
             nameFr = "Thon Naturel à l'Eau",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.FISH_SEAFOOD,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 116,
             proteinPer100g = 26.0f,
             carbsPer100g = 0.0f,
@@ -452,7 +514,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Ultimate cutting protein source with virtually zero carbs and fats.",
             healthBenefitFr = "Protéine idéale pour la sèche, sans glucides et sans graisses.",
             emoji = "🐠",
-            defaultServingGrams = 120
+            defaultServingGrams = 120,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "sardines",
@@ -460,7 +523,7 @@ object WholeFoodsRepository {
             nameEn = "Fresh Grilled Sardines",
             nameFr = "Sardines Fraîches Grillées",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.FISH_SEAFOOD,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 208,
             proteinPer100g = 24.6f,
             carbsPer100g = 0.0f,
@@ -472,27 +535,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Strengthens bones and joints with natural calcium and vitamin D.",
             healthBenefitFr = "Renforce les os et articulations grâce au calcium et vitamine D.",
             emoji = "🐟",
-            defaultServingGrams = 120
-        ),
-        WholeFoodItem(
-            id = "sea_bass_dorade",
-            nameAr = "سمك القاروص / الوراطة (Dorade)",
-            nameEn = "Sea Bass / Sea Bream Fillet",
-            nameFr = "Filet de Daurade / Loup de Mer",
-            origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.FISH_SEAFOOD,
-            caloriesPer100g = 124,
-            proteinPer100g = 23.5f,
-            carbsPer100g = 0.0f,
-            fatPer100g = 3.0f,
-            vitaminsAndMineralsAr = "يود طبيعي, فسفور, مغنيسيوم, فيتامين B12",
-            vitaminsAndMineralsEn = "Natural Iodine, Phosphorus, Magnesium, Vitamin B12",
-            vitaminsAndMineralsFr = "Iode naturel, Phosphore, Magnésium, Vitamine B12",
-            healthBenefitAr = "سمك أبيض خفيف سريع الهضم يدعم نشاط الغدة الدرقية والأيض.",
-            healthBenefitEn = "Light white fish supporting thyroid function and metabolism.",
-            healthBenefitFr = "Poisson blanc léger soutenant le métabolisme et la thyroïde.",
-            emoji = "🐡",
-            defaultServingGrams = 180
+            defaultServingGrams = 120,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "fresh_shrimp",
@@ -500,7 +544,7 @@ object WholeFoodsRepository {
             nameEn = "Fresh Grilled Shrimps",
             nameFr = "Crevettes Fraîches",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.FISH_SEAFOOD,
+            category = FoodCategory.MEAT_POULTRY_FISH,
             caloriesPer100g = 99,
             proteinPer100g = 24.0f,
             carbsPer100g = 0.2f,
@@ -512,17 +556,20 @@ object WholeFoodsRepository {
             healthBenefitEn = "Pure seafood protein with astaxanthin for joint recovery.",
             healthBenefitFr = "Protéine marine pure pour la régénération tissulaire.",
             emoji = "🦐",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
 
-        // 5. LEGUMES & GRAINS (البقوليات والحبوب)
+        // ==========================================
+        // 4. LEGUMES & GRAINS (البقوليات والحبوب)
+        // ==========================================
         WholeFoodItem(
             id = "oats_whole",
-            nameAr = "شوفان حبوب كاملة / بسيسة تونسية",
-            nameEn = "Whole Rolled Oats / Bsissa",
-            nameFr = "Flocons d'Avoine / Bsissa",
+            nameAr = "شوفان حبوب كاملة / بسيسة",
+            nameEn = "Whole Rolled Oats",
+            nameFr = "Flocons d'Avoine Entiers",
             origin = FoodOrigin.PLANT,
-            category = FoodCategory.GRAINS_LEGUMES,
+            category = FoodCategory.LEGUMES_GRAINS,
             caloriesPer100g = 389,
             proteinPer100g = 16.9f,
             carbsPer100g = 66.3f,
@@ -534,7 +581,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Sustained workout energy and cholesterol management via beta-glucan.",
             healthBenefitFr = "Énergie durable avant l'entraînement et régulation du cholestérol.",
             emoji = "🌾",
-            defaultServingGrams = 60
+            defaultServingGrams = 60,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "brown_rice",
@@ -542,7 +590,7 @@ object WholeFoodsRepository {
             nameEn = "Cooked Brown / Parboiled Rice",
             nameFr = "Riz Complet / Étuvé",
             origin = FoodOrigin.PLANT,
-            category = FoodCategory.GRAINS_LEGUMES,
+            category = FoodCategory.LEGUMES_GRAINS,
             caloriesPer100g = 123,
             proteinPer100g = 2.7f,
             carbsPer100g = 25.6f,
@@ -554,7 +602,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Core bodybuilding complex carbohydrate source.",
             healthBenefitFr = "Glucide de base pour la performance et le gain musculaire.",
             emoji = "🍚",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "lentils_brown",
@@ -562,7 +611,7 @@ object WholeFoodsRepository {
             nameEn = "Natural Cooked Lentils",
             nameFr = "Lentilles Cuites Naturelles",
             origin = FoodOrigin.PLANT,
-            category = FoodCategory.GRAINS_LEGUMES,
+            category = FoodCategory.LEGUMES_GRAINS,
             caloriesPer100g = 116,
             proteinPer100g = 9.0f,
             carbsPer100g = 20.1f,
@@ -574,7 +623,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Rich in plant protein and dietary fiber for stable blood sugar.",
             healthBenefitFr = "Riche en protéines végétales et fibres stabilisant la glycémie.",
             emoji = "🍲",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "chickpeas",
@@ -582,7 +632,7 @@ object WholeFoodsRepository {
             nameEn = "Boiled Chickpeas",
             nameFr = "Pois Chiches Bouillis",
             origin = FoodOrigin.PLANT,
-            category = FoodCategory.GRAINS_LEGUMES,
+            category = FoodCategory.LEGUMES_GRAINS,
             caloriesPer100g = 164,
             proteinPer100g = 8.9f,
             carbsPer100g = 27.4f,
@@ -594,7 +644,8 @@ object WholeFoodsRepository {
             healthBenefitEn = "Promotes long satiety and supports gut microbiome.",
             healthBenefitFr = "Procure une satiété prolongée et soutient la digestion.",
             emoji = "🧆",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
         WholeFoodItem(
             id = "quinoa",
@@ -602,7 +653,7 @@ object WholeFoodsRepository {
             nameEn = "Cooked Organic Quinoa",
             nameFr = "Quinoa Cuit Bio",
             origin = FoodOrigin.PLANT,
-            category = FoodCategory.GRAINS_LEGUMES,
+            category = FoodCategory.LEGUMES_GRAINS,
             caloriesPer100g = 120,
             proteinPer100g = 4.4f,
             carbsPer100g = 21.3f,
@@ -614,177 +665,41 @@ object WholeFoodsRepository {
             healthBenefitEn = "Gluten-free complete protein grain optimizing plant-based repair.",
             healthBenefitFr = "Graine sans gluten complète pour la réparation musculaire.",
             emoji = "🥣",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
         ),
 
-        // 6. NATURAL SUPPLEMENTS & NUTS (المكملات الطبيعية والمكسرات)
+        // ==========================================
+        // 5. DAIRY & DAIRY PRODUCTS (الحليب ومشتقاته)
+        // ==========================================
         WholeFoodItem(
-            id = "raw_almonds",
-            nameAr = "لوز نيء طبيعي",
-            nameEn = "Raw Natural Almonds",
-            nameFr = "Amandes Crues Naturelles",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 579,
-            proteinPer100g = 21.2f,
-            carbsPer100g = 21.6f,
-            fatPer100g = 49.9f,
-            vitaminsAndMineralsAr = "فيتامين E, مغنيسيوم, زنك, كالسيوم",
-            vitaminsAndMineralsEn = "Vitamin E, Magnesium, Zinc, Calcium",
-            vitaminsAndMineralsFr = "Vitamine E, Magnésium, Zinc, Calcium",
-            healthBenefitAr = "يحسن جودة النوم والاستشفاء العضلي الليلي بفضل وفرة المغنيسيوم.",
-            healthBenefitEn = "Elevates sleep quality and overnight muscle repair with magnesium.",
-            healthBenefitFr = "Améliore la récupération nocturne et le sommeil avec le magnésium.",
-            emoji = "🥜",
-            defaultServingGrams = 30
-        ),
-        WholeFoodItem(
-            id = "raw_walnuts",
-            nameAr = "عين الجمل / جوز طبيعي",
-            nameEn = "Raw English Walnuts",
-            nameFr = "Noix Crues Naturelles",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 654,
-            proteinPer100g = 15.2f,
-            carbsPer100g = 13.7f,
-            fatPer100g = 65.2f,
-            vitaminsAndMineralsAr = "حمض ألفا لينولينيك (ALA Omega-3), بوليفينول, نحاس",
-            vitaminsAndMineralsEn = "Alpha-Linolenic Acid (ALA Omega-3), Polyphenols, Copper",
-            vitaminsAndMineralsFr = "Acide alpha-linolénique (ALA Oméga-3), Polyphénols",
-            healthBenefitAr = "يعزز التركيز الذهني وصحة الأوعية الدموية ومرونة المفاصل.",
-            healthBenefitEn = "Sharpens cognitive focus and maintains vascular flexibility.",
-            healthBenefitFr = "Améliore la concentration mentale et la souplesse articulaire.",
-            emoji = "🌰",
-            defaultServingGrams = 30
-        ),
-        WholeFoodItem(
-            id = "extra_virgin_olive_oil",
-            nameAr = "زيت زيتون بكر ممتاز",
-            nameEn = "Extra Virgin Olive Oil",
-            nameFr = "Huile d'Olive Extra Vierge",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 884,
-            proteinPer100g = 0.0f,
-            carbsPer100g = 0.0f,
-            fatPer100g = 100.0f,
-            vitaminsAndMineralsAr = "بوليفينولات (مضادات أكسدة), فيتامين E, أوميغا-9",
-            vitaminsAndMineralsEn = "Polyphenols, Vitamin E, Omega-9 (Oleic Acid)",
-            vitaminsAndMineralsFr = "Polyphénols, Vitamine E, Oméga-9 (Acide oléique)",
-            healthBenefitAr = "أفضل دهون أحادية غير مشبعة تدعم هرمون التستوستيرون وصحة القلب.",
-            healthBenefitEn = "Monounsaturated fat gold standard boosting natural hormone synthesis.",
-            healthBenefitFr = "Graisse saine favorisant la production hormonale et la santé cardiaque.",
-            emoji = "🫒",
-            defaultServingGrams = 15
-        ),
-        WholeFoodItem(
-            id = "natural_peanut_butter",
-            nameAr = "زبدة فول سوداني طبيعية 100%",
-            nameEn = "100% Pure Peanut Butter",
-            nameFr = "Beurre de Cacahuète 100% Pur",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 588,
-            proteinPer100g = 25.0f,
-            carbsPer100g = 20.0f,
-            fatPer100g = 50.0f,
-            vitaminsAndMineralsAr = "نياسين (B3), ريزفيراترول, حمض الفوليك, زنك",
-            vitaminsAndMineralsEn = "Niacin (B3), Resveratrol, Folate, Zinc",
-            vitaminsAndMineralsFr = "Niacine (B3), Resvératrol, Folate, Zinc",
-            healthBenefitAr = "مصدر طاقة عالي السعرات والبروتين مثالي لزيادة الوزن العضلي النقي.",
-            healthBenefitEn = "Calorie-dense protein fuel ideal for clean muscle building.",
-            healthBenefitFr = "Source d'énergie dense et protéinée parfaite pour la prise de masse.",
-            emoji = "🥜",
-            defaultServingGrams = 30
-        ),
-        WholeFoodItem(
-            id = "chia_seeds",
-            nameAr = "بذور الشيا الطبيعية",
-            nameEn = "Raw Chia Seeds",
-            nameFr = "Graines de Chia Naturelles",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 486,
-            proteinPer100g = 16.5f,
-            carbsPer100g = 42.1f,
-            fatPer100g = 30.7f,
-            vitaminsAndMineralsAr = "ألياف هيدروفيليك (تحبس الماء), أوميغا-3 نباتي, كالسيوم",
-            vitaminsAndMineralsEn = "Hydrophilic Fiber (retention), Omega-3, Calcium",
-            vitaminsAndMineralsFr = "Fibres hydrophiles, Oméga-3 végétal, Calcium",
-            healthBenefitAr = "تحافظ على ترطيب الخلايا والأمعاء وتفرز هلاماً يطيل الشبع.",
-            healthBenefitEn = "Sustains prolonged hydration and releases sustained energy.",
-            healthBenefitFr = "Maintient l'hydratation cellulaire et prolonge la satiété.",
-            emoji = "🌱",
-            defaultServingGrams = 20
-        ),
-        WholeFoodItem(
-            id = "pure_honey",
-            nameAr = "عسل نحل طبيعي حر",
-            nameEn = "Pure Raw Natural Honey",
-            nameFr = "Miel Naturel Pur",
-            origin = FoodOrigin.PLANT,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 304,
-            proteinPer100g = 0.3f,
-            carbsPer100g = 82.4f,
-            fatPer100g = 0.0f,
-            vitaminsAndMineralsAr = "إنزيمات حية, فلافونويد, حديد, مغنيسيوم",
-            vitaminsAndMineralsEn = "Live Enzymes, Flavonoids, Iron, Magnesium",
-            vitaminsAndMineralsFr = "Enzymes vivantes, Flavonoïdes, Fer, Magnésium",
-            healthBenefitAr = "طاقة نقية سريعة قبل التمارين ومضاد بكتيري طبيعي يرفع المناعة.",
-            healthBenefitEn = "Clean fast workout fuel with antibacterial immunity benefits.",
-            healthBenefitFr = "Énergie rapide avant l'effort et propriétés antibactériennes.",
-            emoji = "🍯",
-            defaultServingGrams = 25
-        ),
-        WholeFoodItem(
-            id = "whey_isolate",
-            nameAr = "بروتين مصل اللبن النقي (Whey Isolate)",
-            nameEn = "Pure Whey Protein Isolate",
-            nameFr = "Isolat de Whey Protéine Pur",
+            id = "fresh_whole_milk",
+            nameAr = "حليب بقر طازج كامل الدسم",
+            nameEn = "Fresh Whole Cow's Milk",
+            nameFr = "Lait Entier Frais",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 370,
-            proteinPer100g = 88.0f,
-            carbsPer100g = 2.0f,
-            fatPer100g = 1.0f,
-            vitaminsAndMineralsAr = "BCAA مركز (لوسين, إيزولوسين, فالين), غلوتامين",
-            vitaminsAndMineralsEn = "Concentrated BCAAs (Leucine, Isoleucine, Valine), Glutamine",
-            vitaminsAndMineralsFr = "BCAA concentrés (Leucine, Isoleucine, Valine), Glutamine",
-            healthBenefitAr = "أسرع بروتين امتصاصاً لبدء تخليق البروتين العضلي بعد التدريب مباشرة.",
-            healthBenefitEn = "Fastest-absorbing protein triggering muscle protein synthesis.",
-            healthBenefitFr = "Protéine à assimilation ultra rapide déclenchant la synthèse musculaire.",
+            category = FoodCategory.DAIRY,
+            caloriesPer100g = 62,
+            proteinPer100g = 3.2f,
+            carbsPer100g = 4.8f,
+            fatPer100g = 3.5f,
+            vitaminsAndMineralsAr = "كالسيوم، فيتامين D3، B12، فسفور، بوتاسيوم",
+            vitaminsAndMineralsEn = "Calcium, Vitamin D3, Vitamin B12, Phosphorus, Potassium",
+            vitaminsAndMineralsFr = "Calcium, Vitamine D3, Vitamine B12, Phosphore",
+            healthBenefitAr = "ترطيب فائق وبناء عظمي متين بفضل الكالسيوم والفيتامين D الطبيعي.",
+            healthBenefitEn = "Optimal rehydration and bone building with natural calcium & vitamin D.",
+            healthBenefitFr = "Hydratation optimale et renforcement osseux avec calcium naturel.",
             emoji = "🥛",
-            defaultServingGrams = 30
-        ),
-        WholeFoodItem(
-            id = "ricotta_cheese",
-            nameAr = "جبن ريكوتا طبيعي (Ricotta)",
-            nameEn = "Natural Ricotta Cheese",
-            nameFr = "Fromage Ricotta Naturel",
-            origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
-            caloriesPer100g = 138,
-            proteinPer100g = 11.4f,
-            carbsPer100g = 3.0f,
-            fatPer100g = 9.0f,
-            vitaminsAndMineralsAr = "كالسيوم عالي, فسفور, فيتامين A, B2, سيلينيوم",
-            vitaminsAndMineralsEn = "High Calcium, Phosphorus, Vitamin A, B2, Selenium",
-            vitaminsAndMineralsFr = "Calcium élevé, Phosphore, Vitamines A, B2, Sélénium",
-            healthBenefitAr = "غني ببروتين مصل اللبن الطبيعي سريع الامتصاص لصحة العظام والعضلات.",
-            healthBenefitEn = "Rich in natural whey protein for bone density and muscle repair.",
-            healthBenefitFr = "Riche en protéines de lactosérum pour les os et les muscles.",
-            emoji = "🧀",
-            defaultServingGrams = 100
+            defaultServingGrams = 200,
+            unit = ServingUnit.ML
         ),
         WholeFoodItem(
             id = "greek_yogurt",
-            nameAr = "زبادي يوناني طبيعي",
+            nameAr = "زبادي يوناني طبيعي (Greek Yogurt)",
             nameEn = "Plain Greek Yogurt",
             nameFr = "Yaourt Grec Nature",
             origin = FoodOrigin.ANIMAL,
-            category = FoodCategory.SUPPLEMENTS_NUTS,
+            category = FoodCategory.DAIRY,
             caloriesPer100g = 97,
             proteinPer100g = 10.0f,
             carbsPer100g = 3.6f,
@@ -796,7 +711,289 @@ object WholeFoodsRepository {
             healthBenefitEn = "Boosts gut microbiome and delivers sustained casein protein.",
             healthBenefitFr = "Favorise la flore intestinale et apporte de la caséine lente.",
             emoji = "🥣",
-            defaultServingGrams = 150
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "ricotta_cheese",
+            nameAr = "جبن ريكوتا طبيعي (Ricotta)",
+            nameEn = "Natural Ricotta Cheese",
+            nameFr = "Fromage Ricotta Naturel",
+            origin = FoodOrigin.ANIMAL,
+            category = FoodCategory.DAIRY,
+            caloriesPer100g = 138,
+            proteinPer100g = 11.4f,
+            carbsPer100g = 3.0f,
+            fatPer100g = 9.0f,
+            vitaminsAndMineralsAr = "كالسيوم عالي, فسفور, فيتامين A, B2, سيلينيوم",
+            vitaminsAndMineralsEn = "High Calcium, Phosphorus, Vitamin A, B2, Selenium",
+            vitaminsAndMineralsFr = "Calcium élevé, Phosphore, Vitamines A, B2, Sélénium",
+            healthBenefitAr = "غني ببروتين مصل اللبن الطبيعي سريع الامتصاص لصحة العظام والعضلات.",
+            healthBenefitEn = "Rich in natural whey protein for bone density and muscle repair.",
+            healthBenefitFr = "Riche en protéines de lactosérum pour les os et les muscles.",
+            emoji = "🧀",
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "cottage_cheese",
+            nameAr = "جبن قريش طبيعي (Cottage Cheese)",
+            nameEn = "Natural Cottage Cheese",
+            nameFr = "Fromage Blanc / Cottage Cheese",
+            origin = FoodOrigin.ANIMAL,
+            category = FoodCategory.DAIRY,
+            caloriesPer100g = 98,
+            proteinPer100g = 12.5f,
+            carbsPer100g = 3.4f,
+            fatPer100g = 4.3f,
+            vitaminsAndMineralsAr = "كازين بطيء الامتصاص، فيتامين B12، سيلينيوم، كالسيوم",
+            vitaminsAndMineralsEn = "Slow Casein, Vitamin B12, Selenium, Calcium",
+            vitaminsAndMineralsFr = "Caséine lente, Vitamine B12, Sélénium, Calcium",
+            healthBenefitAr = "وجبة مسائية مثالية تغذي العضلات بالأحماض الأمينية طوال الليل.",
+            healthBenefitEn = "Ideal bedtime snack feeding muscles slowly throughout sleep.",
+            healthBenefitFr = "Collation idéale du soir nourrissant les muscles toute la nuit.",
+            emoji = "🧀",
+            defaultServingGrams = 150,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "laban_kefir",
+            nameAr = "لبن رائب / كفير طبيعي (Kefir)",
+            nameEn = "Fermented Laban / Kefir",
+            nameFr = "Lait Fermenté / Lben / Kéfir",
+            origin = FoodOrigin.ANIMAL,
+            category = FoodCategory.DAIRY,
+            caloriesPer100g = 55,
+            proteinPer100g = 3.5f,
+            carbsPer100g = 4.5f,
+            fatPer100g = 2.5f,
+            vitaminsAndMineralsAr = "مليارات الخمائر الحية النشطة، فيتامين K2، مغنيسيوم",
+            vitaminsAndMineralsEn = "Billion Live Probiotics, Vitamin K2, Magnesium",
+            vitaminsAndMineralsFr = "Milliards de Probiotiques vivants, Vitamine K2",
+            healthBenefitAr = "يقوي المناعة ويعيد توازن الفلورا المعوية ويسرع التعافي.",
+            healthBenefitEn = "Strengthens immunity and restores optimal intestinal flora.",
+            healthBenefitFr = "Renforce l'immunité et rééquilibre la flore intestinale.",
+            emoji = "🥛",
+            defaultServingGrams = 200,
+            unit = ServingUnit.ML
+        ),
+
+        // ==========================================
+        // 6. NUTS & DRIED FRUITS (المكسرات والفواكه الجافة)
+        // ==========================================
+        WholeFoodItem(
+            id = "raw_almonds",
+            nameAr = "لوز نيء طبيعي",
+            nameEn = "Raw Natural Almonds",
+            nameFr = "Amandes Crues Naturelles",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.NUTS_DRIED_FRUITS,
+            caloriesPer100g = 579,
+            proteinPer100g = 21.2f,
+            carbsPer100g = 21.6f,
+            fatPer100g = 49.9f,
+            vitaminsAndMineralsAr = "فيتامين E, مغنيسيوم, زنك, كالسيوم",
+            vitaminsAndMineralsEn = "Vitamin E, Magnesium, Zinc, Calcium",
+            vitaminsAndMineralsFr = "Vitamine E, Magnésium, Zinc, Calcium",
+            healthBenefitAr = "يحسن جودة النوم والاستشفاء العضلي الليلي بفضل وفرة المغنيسيوم.",
+            healthBenefitEn = "Elevates sleep quality and overnight muscle repair with magnesium.",
+            healthBenefitFr = "Améliore la récupération nocturne et le sommeil avec le magnésium.",
+            emoji = "🥜",
+            defaultServingGrams = 30,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "raw_walnuts",
+            nameAr = "عين الجمل / جوز طبيعي",
+            nameEn = "Raw English Walnuts",
+            nameFr = "Noix Crues Naturelles",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.NUTS_DRIED_FRUITS,
+            caloriesPer100g = 654,
+            proteinPer100g = 15.2f,
+            carbsPer100g = 13.7f,
+            fatPer100g = 65.2f,
+            vitaminsAndMineralsAr = "حمض ألفا لينولينيك (ALA Omega-3), بوليفينول, نحاس",
+            vitaminsAndMineralsEn = "Alpha-Linolenic Acid (ALA Omega-3), Polyphenols, Copper",
+            vitaminsAndMineralsFr = "Acide alpha-linolénique (ALA Oméga-3), Polyphénols",
+            healthBenefitAr = "يعزز التركيز الذهني وصحة الأوعية الدموية ومرونة المفاصل.",
+            healthBenefitEn = "Sharpens cognitive focus and maintains vascular flexibility.",
+            healthBenefitFr = "Améliore la concentration mentale et la souplesse articulaire.",
+            emoji = "🌰",
+            defaultServingGrams = 30,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "dried_figs",
+            nameAr = "تين مجفف طبيعي (شريحة)",
+            nameEn = "Natural Dried Figs",
+            nameFr = "Figues Séchées Naturelles",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.NUTS_DRIED_FRUITS,
+            caloriesPer100g = 249,
+            proteinPer100g = 3.3f,
+            carbsPer100g = 63.9f,
+            fatPer100g = 0.9f,
+            vitaminsAndMineralsAr = "كالسيوم عالي، بوتاسيوم، حديد، ألياف ذائبة",
+            vitaminsAndMineralsEn = "High Calcium, Potassium, Iron, Soluble Fiber",
+            vitaminsAndMineralsFr = "Calcium élevé, Potassium, Fer, Fibres solubles",
+            healthBenefitAr = "مصدر ممتاز للكالسيوم النباتي والطاقة المركزة لصحة العظام والنشاط.",
+            healthBenefitEn = "Superb plant calcium source and concentrated energy for bones.",
+            healthBenefitFr = "Excellente source de calcium végétal et d'énergie pour les os.",
+            emoji = "🍇",
+            defaultServingGrams = 40,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "golden_raisins",
+            nameAr = "زبيب طبيعي مجفف",
+            nameEn = "Natural Dried Raisins",
+            nameFr = "Raisins Secs Naturels",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.NUTS_DRIED_FRUITS,
+            caloriesPer100g = 299,
+            proteinPer100g = 3.1f,
+            carbsPer100g = 79.2f,
+            fatPer100g = 0.5f,
+            vitaminsAndMineralsAr = "بورون، بوتاسيوم، حديد، مضادات أكسدة",
+            vitaminsAndMineralsEn = "Boron, Potassium, Iron, Polyphenols",
+            vitaminsAndMineralsFr = "Bore, Potassium, Fer, Polyphénols",
+            healthBenefitAr = "يعزز مستويات هرمون التستوستيرون الطبيعي بفضل عنصر البورون.",
+            healthBenefitEn = "Supports healthy hormonal balance and energy with boron.",
+            healthBenefitFr = "Soutient l'équilibre hormonal naturel grâce au bore.",
+            emoji = "🍇",
+            defaultServingGrams = 30,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "raw_cashews",
+            nameAr = "كاجو نيء طبيعي",
+            nameEn = "Raw Cashew Nuts",
+            nameFr = "Noix de Cajou Crues",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.NUTS_DRIED_FRUITS,
+            caloriesPer100g = 553,
+            proteinPer100g = 18.2f,
+            carbsPer100g = 30.2f,
+            fatPer100g = 43.8f,
+            vitaminsAndMineralsAr = "مغنيسيوم، زنك، نحاس، فيتامين K",
+            vitaminsAndMineralsEn = "Magnesium, Zinc, Copper, Vitamin K",
+            vitaminsAndMineralsFr = "Magnésium, Zinc, Cuivre, Vitamine K",
+            healthBenefitAr = "يساعد على ارتخاء الأعصاب وتخفيف تشنجات العضلات بعد التمرين.",
+            healthBenefitEn = "Relaxes nervous system and reduces post-training muscle spasms.",
+            healthBenefitFr = "Détend le système nerveux et prévient les spasmes musculaires.",
+            emoji = "🥜",
+            defaultServingGrams = 30,
+            unit = ServingUnit.GRAMS
+        ),
+
+        // ==========================================
+        // 7. OILS & HEALTHY FATS (الزيوت والدهون الصحية)
+        // ==========================================
+        WholeFoodItem(
+            id = "extra_virgin_olive_oil",
+            nameAr = "زيت زيتون بكر ممتاز",
+            nameEn = "Extra Virgin Olive Oil",
+            nameFr = "Huile d'Olive Extra Vierge",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.OILS_HEALTHY_FATS,
+            caloriesPer100g = 884,
+            proteinPer100g = 0.0f,
+            carbsPer100g = 0.0f,
+            fatPer100g = 100.0f,
+            vitaminsAndMineralsAr = "بوليفينولات (مضادات أكسدة), فيتامين E, أوميغا-9",
+            vitaminsAndMineralsEn = "Polyphenols, Vitamin E, Omega-9 (Oleic Acid)",
+            vitaminsAndMineralsFr = "Polyphénols, Vitamine E, Oméga-9 (Acide oléique)",
+            healthBenefitAr = "أفضل دهون أحادية غير مشبعة تدعم هرمون التستوستيرون وصحة القلب.",
+            healthBenefitEn = "Monounsaturated fat gold standard boosting natural hormone synthesis.",
+            healthBenefitFr = "Graisse saine favorisant la production hormonale et la santé cardiaque.",
+            emoji = "🫒",
+            defaultServingGrams = 15,
+            unit = ServingUnit.ML
+        ),
+        WholeFoodItem(
+            id = "fresh_avocado",
+            nameAr = "أفوكادو طازج كريمي",
+            nameEn = "Fresh Creamy Avocado",
+            nameFr = "Avocat Frais Crémeux",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.OILS_HEALTHY_FATS,
+            caloriesPer100g = 160,
+            proteinPer100g = 2.0f,
+            carbsPer100g = 8.5f,
+            fatPer100g = 14.7f,
+            vitaminsAndMineralsAr = "حمض الأوليك، بوتاسيوم (أعلى من الموز)، حمض الفوليك، فيتامين E",
+            vitaminsAndMineralsEn = "Oleic Acid, High Potassium, Folate, Vitamin E",
+            vitaminsAndMineralsFr = "Acide oléique, Potassium élevé, Folate, Vitamine E",
+            healthBenefitAr = "دهون نباتية ممتازة لتحسين حساسية الإنسولين وحماية المفاصل.",
+            healthBenefitEn = "Improves insulin sensitivity and cushions joints with healthy fats.",
+            healthBenefitFr = "Améliore la sensibilité à l'insuline et protège les articulations.",
+            emoji = "🥑",
+            defaultServingGrams = 100,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "natural_peanut_butter",
+            nameAr = "زبدة فول سوداني طبيعية 100%",
+            nameEn = "100% Pure Peanut Butter",
+            nameFr = "Beurre de Cacahuète 100% Pur",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.OILS_HEALTHY_FATS,
+            caloriesPer100g = 588,
+            proteinPer100g = 25.0f,
+            carbsPer100g = 20.0f,
+            fatPer100g = 50.0f,
+            vitaminsAndMineralsAr = "نياسين (B3), ريزفيراترول, حمض الفوليك, زنك",
+            vitaminsAndMineralsEn = "Niacin (B3), Resveratrol, Folate, Zinc",
+            vitaminsAndMineralsFr = "Niacine (B3), Resvératrol, Folate, Zinc",
+            healthBenefitAr = "مصدر طاقة عالي السعرات والبروتين مثالي لزيادة الوزن العضلي النقي.",
+            healthBenefitEn = "Calorie-dense protein fuel ideal for clean muscle building.",
+            healthBenefitFr = "Source d'énergie dense et protéinée parfaite pour la prise de masse.",
+            emoji = "🥜",
+            defaultServingGrams = 30,
+            unit = ServingUnit.GRAMS
+        ),
+        WholeFoodItem(
+            id = "virgin_coconut_oil",
+            nameAr = "زيت جوز هند بكر (MCTs)",
+            nameEn = "Virgin Coconut Oil (MCTs)",
+            nameFr = "Huile de Coco Vierge (TCM)",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.OILS_HEALTHY_FATS,
+            caloriesPer100g = 862,
+            proteinPer100g = 0.0f,
+            carbsPer100g = 0.0f,
+            fatPer100g = 100.0f,
+            vitaminsAndMineralsAr = "أحماض دهنية متوسطة السلسلة (MCTs)، حمض اللوريك",
+            vitaminsAndMineralsEn = "Medium-Chain Triglycerides (MCTs), Lauric Acid",
+            vitaminsAndMineralsFr = "Triglycérides à Chaîne Moyenne (TCM), Acide laurique",
+            healthBenefitAr = "يتحول مباشرة إلى كيتونات وطاقة سريعة في الكبد دون تخزينه كدهون.",
+            healthBenefitEn = "Converts directly to clean ketone energy in liver for endurance.",
+            healthBenefitFr = "Converti directement en énergie propre pour l'effort et l'endurance.",
+            emoji = "🥥",
+            defaultServingGrams = 15,
+            unit = ServingUnit.ML
+        ),
+        WholeFoodItem(
+            id = "chia_seeds",
+            nameAr = "بذور الشيا الطبيعية",
+            nameEn = "Raw Chia Seeds",
+            nameFr = "Graines de Chia Naturelles",
+            origin = FoodOrigin.PLANT,
+            category = FoodCategory.OILS_HEALTHY_FATS,
+            caloriesPer100g = 486,
+            proteinPer100g = 16.5f,
+            carbsPer100g = 42.1f,
+            fatPer100g = 30.7f,
+            vitaminsAndMineralsAr = "ألياف هيدروفيليك (تحبس الماء), أوميغا-3 نباتي, كالسيوم",
+            vitaminsAndMineralsEn = "Hydrophilic Fiber (retention), Omega-3, Calcium",
+            vitaminsAndMineralsFr = "Fibres hydrophiles, Oméga-3 végétal, Calcium",
+            healthBenefitAr = "تحافظ على ترطيب الخلايا والأمعاء وتفرز هلاماً يطيل الشبع.",
+            healthBenefitEn = "Sustains prolonged hydration and releases sustained energy.",
+            healthBenefitFr = "Maintient l'hydratation cellulaire et prolonge la satiété.",
+            emoji = "🌱",
+            defaultServingGrams = 20,
+            unit = ServingUnit.GRAMS
         )
     )
 }
