@@ -330,6 +330,12 @@ object LanguageManager {
         AppLanguage.EN -> "Breathing & Safety Tips"
     }
 
+    fun openInYoutube(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "فتح في تطبيق YouTube ↗"
+        AppLanguage.FR -> "Ouvrir dans YouTube ↗"
+        AppLanguage.EN -> "Open in YouTube App ↗"
+    }
+
     fun closeTutorialBtn(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "إغلاق والعودة للجدول"
         AppLanguage.FR -> "Fermer le tutoriel"
@@ -379,4 +385,198 @@ object LanguageManager {
     }
 
     fun toggleThemeLabel(lang: AppLanguage, isDark: Boolean): String = if (isDark) lightModeLabel(lang) else darkModeLabel(lang)
+
+    // --- Natural Foods Section Strings ---
+    fun naturalFoodsSectionTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🌱 دليل الأطعمة الطبيعية الكاملة (لكل 100g)"
+        AppLanguage.FR -> "🌱 Guide des Aliments Naturels (par 100g)"
+        AppLanguage.EN -> "🌱 Whole Foods Nutrition Guide (per 100g)"
+    }
+
+    fun naturalFoodsSubtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "تحليل غذائي دقيق للقيم الغذائية، الفيتامينات والمعادن للأغذية النباتية والحيوانية"
+        AppLanguage.FR -> "Analyse nutritionnelle complète (calories, macros, vitamines et minéraux)"
+        AppLanguage.EN -> "Precise breakdown of calories, macros, vitamins & minerals per 100g"
+    }
+
+    fun filterAll(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الكل"
+        AppLanguage.FR -> "Tous"
+        AppLanguage.EN -> "All"
+    }
+
+    fun filterPlantBased(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🌱 أطعمة نباتية"
+        AppLanguage.FR -> "🌱 Végétal"
+        AppLanguage.EN -> "🌱 Plant-based"
+    }
+
+    fun filterAnimalBased(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "🥩 أطعمة حيوانية"
+        AppLanguage.FR -> "🥩 Animal"
+        AppLanguage.EN -> "🥩 Animal-based"
+    }
+
+    fun vitaminsMineralsLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الفيتامينات والمعادن الأساسية:"
+        AppLanguage.FR -> "Vitamines & Minéraux clés :"
+        AppLanguage.EN -> "Key Vitamins & Minerals:"
+    }
+
+    fun healthBenefitsLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الفائدة الحيوية للعضلات والصحة:"
+        AppLanguage.FR -> "Bénéfice santé & musculaire :"
+        AppLanguage.EN -> "Health & Fitness Benefit:"
+    }
+
+    // --- AI Meal Calorie Calculator Strings ---
+    fun aiCalculatorTab(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حاسبة السعرات الذكية"
+        AppLanguage.FR -> "Calculateur IA"
+        AppLanguage.EN -> "AI Calorie Calc"
+    }
+
+    fun aiCalculatorTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "⚡ حاسبة الوجبات الذكية بالذكاء الاصطناعي"
+        AppLanguage.FR -> "⚡ Calculateur de Repas Intelligent IA"
+        AppLanguage.EN -> "⚡ AI Smart Meal Calorie Calculator"
+    }
+
+    fun aiCalculatorSubtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "اختر المكونات وحدد الكميات، وسيقوم نموذج Gemini بحساب السعرات والماكروز وتقديم تحليل صحي فوري"
+        AppLanguage.FR -> "Sélectionnez les ingrédients et laissez l'IA Gemini calculer les calories, macros et vous conseiller"
+        AppLanguage.EN -> "Pick ingredients and set quantities; Gemini AI will compute exact calories, macros & dietary insights"
+    }
+
+    fun selectCategory(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "التصنيفات الغذائية"
+        AppLanguage.FR -> "Catégories d'aliments"
+        AppLanguage.EN -> "Food Categories"
+    }
+
+    fun catVegetables(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "خضروات"
+        AppLanguage.FR -> "Légumes"
+        AppLanguage.EN -> "Vegetables"
+    }
+
+    fun catFruits(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "فواكه"
+        AppLanguage.FR -> "Fruits"
+        AppLanguage.EN -> "Fruits"
+    }
+
+    fun catMeats(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "لحوم ودواجن"
+        AppLanguage.FR -> "Viandes"
+        AppLanguage.EN -> "Meats & Poultry"
+    }
+
+    fun catFish(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "أسماك وبحريات"
+        AppLanguage.FR -> "Poissons"
+        AppLanguage.EN -> "Fish & Seafood"
+    }
+
+    fun catGrains(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حبوب وبقوليات"
+        AppLanguage.FR -> "Céréales & Légumineuses"
+        AppLanguage.EN -> "Grains & Legumes"
+    }
+
+    fun catDairy(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ألبان وبيض"
+        AppLanguage.FR -> "Laitages & Œufs"
+        AppLanguage.EN -> "Dairy & Eggs"
+    }
+
+    fun catHealthyFats(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "مكسرات ودهون صحية"
+        AppLanguage.FR -> "Noix & Bonnes Graisses"
+        AppLanguage.EN -> "Nuts & Healthy Fats"
+    }
+
+    fun selectedItemsSummary(count: Int, lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "المكونات المختارة ($count)"
+        AppLanguage.FR -> "Ingrédients sélectionnés ($count)"
+        AppLanguage.EN -> "Selected Items ($count)"
+    }
+
+    fun calculateWithAiBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "⚡ تحليل الوجبة بالذكاء الاصطناعي (Gemini)"
+        AppLanguage.FR -> "⚡ Analyser avec l'IA Gemini"
+        AppLanguage.EN -> "⚡ Calculate with Gemini AI"
+    }
+
+    fun calculatingWithAi(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "جاري التحليل الذكي للوجبة..."
+        AppLanguage.FR -> "Analyse intelligente en cours..."
+        AppLanguage.EN -> "Analyzing meal with Gemini AI..."
+    }
+
+    fun mealAnalysisSummaryTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "📊 ملخص التحليل الغذائي للوجبة"
+        AppLanguage.FR -> "📊 Résumé de l'analyse nutritionnelle"
+        AppLanguage.EN -> "📊 Meal Nutrition Summary"
+    }
+
+    fun totalCalories(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إجمالي السعرات"
+        AppLanguage.FR -> "Calories Totales"
+        AppLanguage.EN -> "Total Calories"
+    }
+
+    fun protein(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "بروتين"
+        AppLanguage.FR -> "Protéines"
+        AppLanguage.EN -> "Protein"
+    }
+
+    fun carbs(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "كاربوهيدرات"
+        AppLanguage.FR -> "Glucides"
+        AppLanguage.EN -> "Carbs"
+    }
+
+    fun fats(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "دهون"
+        AppLanguage.FR -> "Lipides"
+        AppLanguage.EN -> "Fats"
+    }
+
+    fun glycemicIndex(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "المؤشر الجلايسيمي"
+        AppLanguage.FR -> "Indice Glycémique"
+        AppLanguage.EN -> "Glycemic Index"
+    }
+
+    fun bestTimingLabel(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "التوقيت الرياضي الأنسب:"
+        AppLanguage.FR -> "Moment idéal de consommation :"
+        AppLanguage.EN -> "Optimal Timing:"
+    }
+
+    fun aiNutritionistInsight(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "💡 نصيحة أخصائي التغذية الذكي:"
+        AppLanguage.FR -> "💡 Conseil du nutritionniste IA :"
+        AppLanguage.EN -> "💡 AI Nutritionist Insight:"
+    }
+
+    fun resetMealBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إعادة ضبط واختيار جديد"
+        AppLanguage.FR -> "Réinitialiser"
+        AppLanguage.EN -> "Reset Selection"
+    }
+
+    fun searchFoodPlaceholder(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ابحث عن مكون طبيعي (دجاج، شوفان، سبانخ...)"
+        AppLanguage.FR -> "Rechercher un aliment..."
+        AppLanguage.EN -> "Search whole food ingredient..."
+    }
+
+    fun emptySelectionPrompt(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "انقر على أي مكون في القائمة لإضافته إلى وجبتك وتعديل وزنه بالغرام"
+        AppLanguage.FR -> "Appuyez sur un aliment ci-dessous pour l'ajouter à votre repas"
+        AppLanguage.EN -> "Tap any ingredient below to add it and adjust weight in grams"
+    }
 }

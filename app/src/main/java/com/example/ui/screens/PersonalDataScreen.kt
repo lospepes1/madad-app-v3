@@ -30,7 +30,7 @@ import com.example.data.model.AppLanguage
 import com.example.data.model.Gender
 import com.example.data.model.UserProfile
 import com.example.localization.LanguageManager
-import com.example.ui.components.InstagramFooter
+import com.example.ui.components.InstagramIconButton
 import com.example.ui.components.ThemeToggleButton
 import com.example.ui.theme.AppTheme
 
@@ -99,7 +99,7 @@ fun PersonalDataScreen(
                         compact = true
                     )
 
-                    InstagramFooter(compact = true)
+                    InstagramIconButton()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -359,10 +359,7 @@ fun PersonalDataScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Permanent Instagram Profile Link
-            InstagramFooter()
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

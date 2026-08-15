@@ -40,7 +40,7 @@ import com.example.localization.LanguageManager
 import com.example.ui.components.ExerciseTutorialBottomSheet
 import com.example.ui.components.ExerciseTutorialDetail
 import com.example.ui.components.ExerciseTutorialHelper
-import com.example.ui.components.InstagramFooter
+import com.example.ui.components.InstagramIconButton
 import com.example.ui.components.ThemeToggleButton
 import com.example.ui.theme.AppTheme
 
@@ -114,9 +114,8 @@ fun DashboardScreen(
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                    // Instagram profile quick link badge
-                    InstagramFooter(
-                        compact = true,
+                    // Instagram profile quick link badge (top only)
+                    InstagramIconButton(
                         modifier = Modifier.padding(end = 4.dp)
                     )
 
@@ -170,27 +169,12 @@ fun DashboardScreen(
             )
         },
         bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(colors.surface),
-                horizontalAlignment = Alignment.CenterHorizontally
+            NavigationBar(
+                containerColor = colors.surface,
+                tonalElevation = 4.dp,
+                windowInsets = WindowInsets.navigationBars
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 4.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    InstagramFooter()
-                }
-
-                NavigationBar(
-                    containerColor = Color.Transparent,
-                    tonalElevation = 0.dp,
-                    windowInsets = WindowInsets.navigationBars
-                ) {
-                    NavigationBarItem(
+                NavigationBarItem(
                         selected = activeTab == 0,
                         onClick = { onTabSelected(0) },
                         icon = {
@@ -242,7 +226,6 @@ fun DashboardScreen(
                         modifier = Modifier.testTag("tab_nutrition")
                     )
                 }
-            }
         },
         containerColor = colors.background
     ) { innerPadding ->

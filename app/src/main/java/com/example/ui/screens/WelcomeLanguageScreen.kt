@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.AppLanguage
 import com.example.localization.LanguageManager
-import com.example.ui.components.InstagramFooter
+import com.example.ui.components.InstagramIconButton
 import com.example.ui.components.ThemeToggleButton
 import com.example.ui.theme.AppTheme
 
@@ -91,7 +91,7 @@ fun WelcomeLanguageScreen(
                     compact = true
                 )
 
-                InstagramFooter(compact = true)
+                InstagramIconButton()
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -233,12 +233,7 @@ fun WelcomeLanguageScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Permanent Instagram Profile Link at Bottom
-            InstagramFooter()
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

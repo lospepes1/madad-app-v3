@@ -1,12 +1,17 @@
 package com.example.ui.components
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -73,7 +79,7 @@ fun EmbeddedYouTubePlayer(
         <body>
             <div class="video-box">
                 <iframe
-                    src="https://www.youtube-nocookie.com/embed/$videoId?autoplay=1&playsinline=1&rel=0&modestbranding=1&enablejsapi=1"
+                    src="https://www.youtube-nocookie.com/embed/$videoId?autoplay=0&playsinline=1&rel=0&modestbranding=1&enablejsapi=1"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
@@ -90,11 +96,19 @@ fun EmbeddedYouTubePlayer(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                settings.mediaPlaybackRequiresUserGesture = false
-                settings.loadWithOverviewMode = true
-                settings.useWideViewPort = true
+                try {
+                    setLayerType(View.LAYER_TYPE_HARDWARE, null)
+                } catch (_: Exception) {
+                    setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                }
+                settings.apply {
+                    javaScriptEnabled = true
+                    domStorageEnabled = true
+                    mediaPlaybackRequiresUserGesture = false
+                    loadWithOverviewMode = true
+                    useWideViewPort = true
+                    mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                }
                 webChromeClient = WebChromeClient()
                 webViewClient = WebViewClient()
                 setBackgroundColor(android.graphics.Color.BLACK)
@@ -102,7 +116,9 @@ fun EmbeddedYouTubePlayer(
             }
         },
         update = { webView ->
-            webView.loadDataWithBaseURL("https://www.youtube.com", html, "text/html", "utf-8", null)
+            try {
+                webView.loadDataWithBaseURL("https://www.youtube.com", html, "text/html", "utf-8", null)
+            } catch (_: Exception) {}
         },
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -118,6 +134,7 @@ fun ExerciseTutorialBottomSheet(
     onDismiss: () -> Unit
 ) {
     val colors = AppTheme.colors
+    val context = LocalContext.current
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -215,7 +232,50 @@ fun ExerciseTutorialBottomSheet(
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Direct YouTube App launcher button
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .border(1.dp, Color(0xFFFF3333).copy(alpha = 0.4f), RoundedCornerShape(14.dp))
+                    .clickable {
+                        try {
+                            val intent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.youtube.com/watch?v=${tutorial.videoId}")
+                            )
+                            context.startActivity(intent)
+                        } catch (_: Exception) {}
+                    }
+                    .testTag("open_external_youtube_button"),
+                color = Color(0x22FF0000)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SmartDisplay,
+                        contentDescription = "YouTube",
+                        tint = Color(0xFFFF4444),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = LanguageManager.openInYoutube(lang),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFF4444)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Subheader: Form instructions
             Row(

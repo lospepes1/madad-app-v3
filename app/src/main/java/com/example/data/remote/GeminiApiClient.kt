@@ -674,4 +674,143 @@ class GeminiApiClient {
 
         return WorkoutPlan(profile.gymLevel, days)
     }
+
+    /**
+     * Prompt 3: AI Meal Calorie & Macro Calculator
+     */
+    suspend fun calculateCustomMealWithAi(
+        selectedFoods: List<SelectedFoodItem>,
+        profile: UserProfile
+    ): AiMealCalculationResult = withContext(Dispatchers.IO) {
+        if (selectedFoods.isEmpty()) {
+            return@withContext AiMealCalculationResult(
+                totalCalories = 0,
+                totalProteinGrams = 0f,
+                totalCarbsGrams = 0f,
+                totalFatGrams = 0f,
+                proteinPercentage = 0,
+                carbsPercentage = 0,
+                fatPercentage = 0,
+                glycemicEstimate = "-",
+                bestTiming = "-",
+                aiInsight = if (profile.language == AppLanguage.AR) "الرجاء اختيار مكونات من القائمة لحساب السعرات والماكروز" else "Please select ingredients to calculate calories",
+                isAiGenerated = false
+            )
+        }
+
+        // Calculate exact base mathematical values
+        val exactCalories = selectedFoods.sumOf { it.calories }
+        val exactProtein = selectedFoods.fold(0f) { acc, item -> acc + item.protein }
+        val exactCarbs = selectedFoods.fold(0f) { acc, item -> acc + item.carbs }
+        val exactFat = selectedFoods.fold(0f) { acc, item -> acc + item.fat }
+
+        val totalMacroGrams = exactProtein + exactCarbs + exactFat
+        val protPct = if (totalMacroGrams > 0) ((exactProtein * 4f) / (exactCalories.coerceAtLeast(1)) * 100).roundToInt().coerceIn(0, 100) else 0
+        val carbPct = if (totalMacroGrams > 0) ((exactCarbs * 4f) / (exactCalories.coerceAtLeast(1)) * 100).roundToInt().coerceIn(0, 100) else 0
+        val fatPct = (100 - protPct - carbPct).coerceAtLeast(0)
+
+        val ingredientsSummary = selectedFoods.joinToString("\n") {
+            "- ${it.foodItem.nameAr} (${it.foodItem.nameEn}): ${it.quantityGrams}g"
+        }
+
+        val promptText = """
+            أنت خبير تغذية وعلوم رياضية في تطبيق 'مداد'. قام المستخدم بتجميع وجبة مخصصة من المكونات الطبيعية التالية:
+            $ingredientsSummary
+
+            بيانات المستخدم:
+            - الهدف: ${profile.goal.name}
+            - الجنس: ${profile.gender.name}
+            - اللغة المطلوبة للرد: ${profile.language.code}
+
+            المطلوب:
+            قم بتحليل هذه الوجبة بدقة وقدم النتيجة بتنسيق JSON فقط بهذا الشكل:
+            {
+              "total_calories": $exactCalories,
+              "protein_grams": ${((exactProtein * 10).roundToInt() / 10.0)},
+              "carbs_grams": ${((exactCarbs * 10).roundToInt() / 10.0)},
+              "fat_grams": ${((exactFat * 10).roundToInt() / 10.0)},
+              "glycemic_estimate": "منخفض / متوسط / مرتفع",
+              "best_timing": "مثالي كـ: وجبة قبل التمرين بساعتين / وجبة استشفاء بعد التمرين / وجبة غداء رئيسية",
+              "ai_insight": "نصيحة غذائية ذكية وموجزة (جملتان) تشرح فوائد هذه التركيبة العضلية والصحية وكيف تخدم هدف ${profile.goal.name}."
+            }
+        """.trimIndent()
+
+        try {
+            val rawJson = callGeminiApi(promptText)
+            val cleanJson = rawJson.trim().removePrefix("```json").removePrefix("```").removeSuffix("```").trim()
+            val obj = JSONObject(cleanJson)
+
+            val cal = obj.optInt("total_calories", exactCalories)
+            val p = obj.optDouble("protein_grams", exactProtein.toDouble()).toFloat()
+            val c = obj.optDouble("carbs_grams", exactCarbs.toDouble()).toFloat()
+            val f = obj.optDouble("fat_grams", exactFat.toDouble()).toFloat()
+            val gly = obj.optString("glycemic_estimate", if (profile.language == AppLanguage.AR) "متوازن (Low-Med GI)" else "Balanced GI")
+            val timing = obj.optString("best_timing", getFallbackTiming(exactProtein, exactCarbs, profile.language))
+            val insight = obj.optString("ai_insight", getFallbackAiInsight(selectedFoods, profile))
+
+            return@withContext AiMealCalculationResult(
+                totalCalories = cal,
+                totalProteinGrams = p,
+                totalCarbsGrams = c,
+                totalFatGrams = f,
+                proteinPercentage = protPct,
+                carbsPercentage = carbPct,
+                fatPercentage = fatPct,
+                glycemicEstimate = gly,
+                bestTiming = timing,
+                aiInsight = insight,
+                isAiGenerated = true
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        // Resilient scientific fallback
+        return@withContext AiMealCalculationResult(
+            totalCalories = exactCalories,
+            totalProteinGrams = ((exactProtein * 10).roundToInt() / 10f),
+            totalCarbsGrams = ((exactCarbs * 10).roundToInt() / 10f),
+            totalFatGrams = ((exactFat * 10).roundToInt() / 10f),
+            proteinPercentage = protPct,
+            carbsPercentage = carbPct,
+            fatPercentage = fatPct,
+            glycemicEstimate = if (profile.language == AppLanguage.AR) "متوازن وطبيعي" else "Balanced GI",
+            bestTiming = getFallbackTiming(exactProtein, exactCarbs, profile.language),
+            aiInsight = getFallbackAiInsight(selectedFoods, profile),
+            isAiGenerated = false
+        )
+    }
+
+    private fun getFallbackTiming(protein: Float, carbs: Float, lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> when {
+            carbs > 40f && protein < 20f -> "مثالية قبل التمرين بـ 90-120 دقيقة لشحن طاقة العضلات"
+            protein >= 25f -> "مثالية بعد التمرين مباشرة لتسريع البناء والاستشفاء العضلي"
+            else -> "وجبة مغذية متكاملة مناسبة كغداء أو عشاء رئيسي"
+        }
+        AppLanguage.FR -> if (protein >= 25f) "Idéal post-entraînement pour la récupération musculaire" else "Repas équilibré pour l'énergie quotidienne"
+        AppLanguage.EN -> if (protein >= 25f) "Ideal post-workout for muscle protein synthesis" else "Balanced meal for daily sustained energy"
+    }
+
+    private fun getFallbackAiInsight(selectedFoods: List<SelectedFoodItem>, profile: UserProfile): String {
+        val totalProtein = selectedFoods.fold(0f) { acc, item -> acc + item.protein }
+        val isHighProtein = totalProtein >= 25f
+        return when (profile.language) {
+            AppLanguage.AR -> if (isHighProtein) {
+                "تركيبة ممتازة غنية بالأحماض الأمينية الأساسية والمعادن الطبيعية، تساهم في الحفاظ على الكتلة العضلية وتعزيز الشعور بالشبع لفترة طويلة."
+            } else {
+                "مزيج طبيعي متوازن يوفر فيتامينات وألياف حيوية تدعم نشاط الجهاز الهضمي وثبات مستويات الطاقة بدون هبوط مفاجئ في سكر الدم."
+            }
+            AppLanguage.FR -> if (isHighProtein) {
+                "Excellente combinaison riche en acides aminés et nutriments complets pour la récupération et la satiété."
+            } else {
+                "Mélange naturel équilibré apportant des vitamines et fibres essentielles pour une énergie stable."
+            }
+            AppLanguage.EN -> if (isHighProtein) {
+                "Outstanding whole-food blend providing complete amino acids and micronutrients to support muscle recovery and prolonged satiety."
+            } else {
+                "Balanced natural combination providing essential fiber and vitamins for steady metabolic energy without sugar spikes."
+            }
+        }
+    }
 }
+

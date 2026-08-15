@@ -35,7 +35,7 @@ import com.example.data.model.AnalysisResult
 import com.example.data.model.GymLevel
 import com.example.data.model.UserProfile
 import com.example.localization.LanguageManager
-import com.example.ui.components.InstagramFooter
+import com.example.ui.components.InstagramIconButton
 import com.example.ui.components.ThemeToggleButton
 import com.example.ui.theme.AppTheme
 
@@ -140,7 +140,7 @@ fun AnalysisGymLevelScreen(
                             compact = true
                         )
 
-                        InstagramFooter(compact = true)
+                        InstagramIconButton()
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -401,10 +401,7 @@ fun AnalysisGymLevelScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Permanent Instagram Profile Link
-                InstagramFooter()
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
 
