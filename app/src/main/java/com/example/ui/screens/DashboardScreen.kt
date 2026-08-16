@@ -231,13 +231,13 @@ fun DashboardScreen(
                         onClick = { onTabSelected(2) },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Calculate,
-                                contentDescription = "Meal Calculator"
+                                imageVector = Icons.Default.Alarm,
+                                contentDescription = "Gym Alarm"
                             )
                         },
                         label = {
                             Text(
-                                text = LanguageManager.tabCustomCalculator(lang),
+                                text = LanguageManager.tabGymAlarm(lang),
                                 fontSize = 13.sp,
                                 fontWeight = if (activeTab == 2) FontWeight.Bold else FontWeight.Normal
                             )
@@ -249,7 +249,7 @@ fun DashboardScreen(
                             unselectedIconColor = colors.textSecondary,
                             unselectedTextColor = colors.textSecondary
                         ),
-                        modifier = Modifier.testTag("tab_custom_calculator")
+                        modifier = Modifier.testTag("tab_gym_alarm")
                     )
                 }
         },
@@ -260,61 +260,63 @@ fun DashboardScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Summary Banner
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .clip(RoundedCornerShape(22.dp))
-                    .border(1.dp, colors.cardBorder, RoundedCornerShape(22.dp)),
-                color = colors.cardBackgroundOpaque
-            ) {
-                Row(
+            // Summary Banner (Shown on Exercises & Nutrition Plan tabs)
+            if (activeTab != 2) {
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .border(1.dp, colors.cardBorder, RoundedCornerShape(22.dp)),
+                    color = colors.cardBackgroundOpaque
                 ) {
-                    Column {
-                        Text(
-                            text = "TDEE: ${analysisResult?.tdee ?: "--"} kcal | BMI: ${analysisResult?.bmi ?: "--"}",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colors.textPrimary
-                        )
-                        Text(
-                            text = LanguageManager.goalName(userProfile.goal, lang),
-                            fontSize = 12.sp,
-                            color = colors.primaryAccent,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-                    }
-
-                    Surface(
+                    Row(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .border(1.dp, colors.primaryAccent.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
-                            .clickable { onRefreshPlanClick() },
-                        color = colors.primaryAccent.copy(alpha = 0.15f)
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh",
-                                tint = colors.primaryAccent,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
+                        Column {
                             Text(
-                                text = LanguageManager.refreshPlan(lang),
-                                fontSize = 11.sp,
+                                text = "TDEE: ${analysisResult?.tdee ?: "--"} kcal | BMI: ${analysisResult?.bmi ?: "--"}",
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
                             )
+                            Text(
+                                text = LanguageManager.goalName(userProfile.goal, lang),
+                                fontSize = 12.sp,
+                                color = colors.primaryAccent,
+                                modifier = Modifier.padding(top = 2.dp)
+                            )
+                        }
+
+                        Surface(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .border(1.dp, colors.primaryAccent.copy(alpha = 0.35f), RoundedCornerShape(20.dp))
+                                .clickable { onRefreshPlanClick() },
+                            color = colors.primaryAccent.copy(alpha = 0.15f)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Refresh",
+                                    tint = colors.primaryAccent,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = LanguageManager.refreshPlan(lang),
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.textPrimary
+                                )
+                            }
                         }
                     }
                 }
@@ -574,9 +576,9 @@ fun DashboardScreen(
                 }
             }
 
-            // Tab 2: Custom Food & Calorie Calculator
+            // Tab 2: Gym Alarm & Workout Reminder
             if (activeTab == 2) {
-                CustomFoodCalculatorScreen(
+                GymAlarmScreen(
                     language = lang,
                     modifier = Modifier.fillMaxSize()
                 )

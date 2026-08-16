@@ -552,6 +552,199 @@ object LanguageManager {
 
     fun toggleThemeLabel(lang: AppLanguage, isDark: Boolean): String = if (isDark) lightModeLabel(lang) else darkModeLabel(lang)
 
+    // Gym Alarm & Reminder Tab & Screen
+    fun tabGymAlarm(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "منبه الجيم ⏰"
+        AppLanguage.FR -> "Alarme Gym ⏰"
+        AppLanguage.EN -> "Gym Alarm ⏰"
+    }
+
+    fun gymAlarmTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "منبه وتذكير الجيم ⏰"
+        AppLanguage.FR -> "Alarme & Rappels Gym ⏰"
+        AppLanguage.EN -> "Gym Alarm & Reminders ⏰"
+    }
+
+    fun gymAlarmSubtitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "اضبط مواعيد تمارينك وتلقَّ تنبيهات دقيقة لعدم تفويت أي حصة تدريبية"
+        AppLanguage.FR -> "Programmez vos séances et recevez des alertes pour ne manquer aucun entraînement"
+        AppLanguage.EN -> "Schedule workout alerts and never miss a training session"
+    }
+
+    fun nextUpcomingAlarm(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "المنبه القادم"
+        AppLanguage.FR -> "Prochaine alerte"
+        AppLanguage.EN -> "Next Upcoming Alarm"
+    }
+
+    fun noAlarmsActive(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "لا توجد منبهات مفعلة حالياً"
+        AppLanguage.FR -> "Aucune alarme active"
+        AppLanguage.EN -> "No active alarms"
+    }
+
+    fun addNewAlarm(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إضافة منبه جديد +"
+        AppLanguage.FR -> "Nouvelle alarme +"
+        AppLanguage.EN -> "Add New Alarm +"
+    }
+
+    fun editAlarmTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "تعديل منبه التمرين"
+        AppLanguage.FR -> "Modifier l'alarme"
+        AppLanguage.EN -> "Edit Workout Alarm"
+    }
+
+    fun newAlarmTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إعداد منبه تدريب جديد"
+        AppLanguage.FR -> "Configurer une nouvelle alarme"
+        AppLanguage.EN -> "Set New Workout Alarm"
+    }
+
+    fun alarmLabelInput(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "عنوان جلسة التمرين"
+        AppLanguage.FR -> "Nom de la séance"
+        AppLanguage.EN -> "Workout Session Label"
+    }
+
+    fun repeatDays(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "أيام التكرار الأسبوعي"
+        AppLanguage.FR -> "Jours de répétition"
+        AppLanguage.EN -> "Repeat Days"
+    }
+
+    fun quickWorkoutPresets(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "نماذج سريعة لتمارينك"
+        AppLanguage.FR -> "Modèles rapides"
+        AppLanguage.EN -> "Quick Presets"
+    }
+
+    fun saveAlarmBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حفظ المنبه وتفعيله"
+        AppLanguage.FR -> "Enregistrer & Activer"
+        AppLanguage.EN -> "Save & Enable Alarm"
+    }
+
+    fun cancelBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "إلغاء"
+        AppLanguage.FR -> "Annuler"
+        AppLanguage.EN -> "Cancel"
+    }
+
+    fun deleteAlarmBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "حذف المنبه"
+        AppLanguage.FR -> "Supprimer"
+        AppLanguage.EN -> "Delete Alarm"
+    }
+
+    fun testAlarmNow(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "اختبار الإشعار الآن 🔔"
+        AppLanguage.FR -> "Tester la notification 🔔"
+        AppLanguage.EN -> "Test Notification Now 🔔"
+    }
+
+    fun permissionRequiredTitle(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "تفعيل إشعارات المنبه"
+        AppLanguage.FR -> "Autoriser les notifications"
+        AppLanguage.EN -> "Enable Alarm Notifications"
+    }
+
+    fun permissionRequiredDesc(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "يحتاج التطبيق إلى إذن الإشعارات والتنبيه الدقيق لتذكيرك بمواعيد التدريب في الخلفية وعند إغلاق الشاشة."
+        AppLanguage.FR -> "L'application a besoin de l'autorisation de notification pour vous alerter même lorsque l'écran est éteint."
+        AppLanguage.EN -> "The app requires notification and exact alarm permissions to alert you on time when the screen is locked."
+    }
+
+    fun grantPermissionBtn(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "منح إذن الإشعارات ✅"
+        AppLanguage.FR -> "Accorder l'autorisation ✅"
+        AppLanguage.EN -> "Grant Permission ✅"
+    }
+
+    fun dayShortMon(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الإثنين"
+        AppLanguage.FR -> "Lun"
+        AppLanguage.EN -> "Mon"
+    }
+
+    fun dayShortTue(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الثلاثاء"
+        AppLanguage.FR -> "Mar"
+        AppLanguage.EN -> "Tue"
+    }
+
+    fun dayShortWed(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الأربعاء"
+        AppLanguage.FR -> "Mer"
+        AppLanguage.EN -> "Wed"
+    }
+
+    fun dayShortThu(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الخميس"
+        AppLanguage.FR -> "Jeu"
+        AppLanguage.EN -> "Thu"
+    }
+
+    fun dayShortFri(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الجمعة"
+        AppLanguage.FR -> "Ven"
+        AppLanguage.EN -> "Fri"
+    }
+
+    fun dayShortSat(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "السبت"
+        AppLanguage.FR -> "Sam"
+        AppLanguage.EN -> "Sat"
+    }
+
+    fun dayShortSun(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الأحد"
+        AppLanguage.FR -> "Dim"
+        AppLanguage.EN -> "Sun"
+    }
+
+    fun dayLetterMon(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ن"
+        AppLanguage.FR -> "L"
+        AppLanguage.EN -> "M"
+    }
+
+    fun dayLetterTue(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ث"
+        AppLanguage.FR -> "M"
+        AppLanguage.EN -> "T"
+    }
+
+    fun dayLetterWed(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ر"
+        AppLanguage.FR -> "M"
+        AppLanguage.EN -> "W"
+    }
+
+    fun dayLetterThu(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "خ"
+        AppLanguage.FR -> "J"
+        AppLanguage.EN -> "T"
+    }
+
+    fun dayLetterFri(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ج"
+        AppLanguage.FR -> "V"
+        AppLanguage.EN -> "F"
+    }
+
+    fun dayLetterSat(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "س"
+        AppLanguage.FR -> "S"
+        AppLanguage.EN -> "S"
+    }
+
+    fun dayLetterSun(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "ح"
+        AppLanguage.FR -> "D"
+        AppLanguage.EN -> "S"
+    }
+
     // Custom Food & Calorie Calculator Tab & Screen
     fun tabCustomCalculator(lang: AppLanguage): String = when (lang) {
         AppLanguage.AR -> "حاسبة الوجبات 🧮"
@@ -572,27 +765,27 @@ object LanguageManager {
     }
 
     fun categoryAll(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الكل"
-        AppLanguage.FR -> "Tous"
-        AppLanguage.EN -> "All"
-    }
-
-    fun categoryVegetables(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الخضروات بأنواعها 🥬"
-        AppLanguage.FR -> "Légumes variés 🥬"
-        AppLanguage.EN -> "Vegetables 🥬"
-    }
-
-    fun categoryFruits(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "الفواكه بأنواعها 🍎"
-        AppLanguage.FR -> "Fruits variés 🍎"
-        AppLanguage.EN -> "Fruits 🍎"
+        AppLanguage.AR -> "الكل 📋"
+        AppLanguage.FR -> "Tous 📋"
+        AppLanguage.EN -> "All 📋"
     }
 
     fun categoryMeatPoultryFish(lang: AppLanguage): String = when (lang) {
-        AppLanguage.AR -> "اللحوم، الدواجن والأسماك 🍗🐟"
-        AppLanguage.FR -> "Viandes, Volailles & Poissons 🍗🐟"
-        AppLanguage.EN -> "Meats, Poultry & Fish 🍗🐟"
+        AppLanguage.AR -> "اللحوم الحمراء والبيضاء والأسماك 🥩🍗🐟"
+        AppLanguage.FR -> "Viandes Rouges, Blanches & Poissons 🥩🍗🐟"
+        AppLanguage.EN -> "Red & White Meats & Fish 🥩🍗🐟"
+    }
+
+    fun categoryVegetables(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الخضروات والورقيات 🥬🥦"
+        AppLanguage.FR -> "Légumes & Feuilles vertes 🥬🥦"
+        AppLanguage.EN -> "Vegetables & Greens 🥬🥦"
+    }
+
+    fun categoryFruits(lang: AppLanguage): String = when (lang) {
+        AppLanguage.AR -> "الغلال والفواكه 🍎🍌"
+        AppLanguage.FR -> "Fruits & Baies 🍎🍌"
+        AppLanguage.EN -> "Fruits & Berries 🍎🍌"
     }
 
     fun categoryLegumesGrains(lang: AppLanguage): String = when (lang) {

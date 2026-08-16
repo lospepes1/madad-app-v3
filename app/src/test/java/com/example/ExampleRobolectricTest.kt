@@ -149,4 +149,75 @@ class ExampleRobolectricTest {
     org.junit.Assert.assertEquals(194, selectedOats.calories)
     org.junit.Assert.assertEquals(8.45f, selectedOats.protein, 0.01f)
   }
+
+  @Test
+  fun `gym alarm model calculates formatted time and repeat days summary`() {
+    val morningAlarm = com.example.data.model.GymAlarm(
+      hour = 6,
+      minute = 30,
+      label = "Leg Day Workout",
+      isEnabled = true,
+      repeatDays = setOf(java.util.Calendar.MONDAY, java.util.Calendar.WEDNESDAY, java.util.Calendar.FRIDAY)
+    )
+
+    org.junit.Assert.assertEquals("06:30 AM", morningAlarm.formattedTime(use24Hour = false))
+    org.junit.Assert.assertEquals("06:30", morningAlarm.formattedTime(use24Hour = true))
+
+    val (timeStr, period) = morningAlarm.timeParts()
+    org.junit.Assert.assertEquals("06:30", timeStr)
+    org.junit.Assert.assertEquals("AM", period)
+
+    val summaryAr = morningAlarm.getRepeatDaysSummary(com.example.data.model.AppLanguage.AR)
+    org.junit.Assert.assertTrue(summaryAr.contains("الإثنين") && summaryAr.contains("الأربعاء") && summaryAr.contains("الجمعة"))
+
+    val summaryEn = morningAlarm.getRepeatDaysSummary(com.example.data.model.AppLanguage.EN)
+    org.junit.Assert.assertTrue(summaryEn.contains("Mon") && summaryEn.contains("Wed") && summaryEn.contains("Fri"))
+  }
+
+  @Test
+  fun `gym alarm repository saves adds and toggles alarms correctly`() {
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    val repo = com.example.data.local.GymAlarmRepository(context)
+
+    val initialAlarms = repo.getAlarms()
+    org.junit.Assert.assertTrue(initialAlarms.isNotEmpty())
+
+    val customAlarm = com.example.data.model.GymAlarm(
+      id = "custom_test_alarm_123",
+      hour = 18,
+      minute = 45,
+      label = "Evening Cardio Session ⚡",
+      isEnabled = true,
+      repeatDays = setOf(java.util.Calendar.TUESDAY, java.util.Calendar.THURSDAY)
+    )
+
+    repo.addOrUpdateAlarm(customAlarm)
+    val fetched = repo.getAlarm("custom_test_alarm_123")
+    org.junit.Assert.assertNotNull(fetched)
+    org.junit.Assert.assertEquals("Evening Cardio Session ⚡", fetched?.label)
+    org.junit.Assert.assertEquals(18, fetched?.hour)
+    org.junit.Assert.assertEquals(45, fetched?.minute)
+    org.junit.Assert.assertTrue(fetched?.isEnabled == true)
+
+    // Toggle off
+    repo.toggleAlarm("custom_test_alarm_123", false)
+    val toggled = repo.getAlarm("custom_test_alarm_123")
+    org.junit.Assert.assertFalse(toggled?.isEnabled == true)
+
+    // Delete
+    repo.deleteAlarm("custom_test_alarm_123")
+    val deleted = repo.getAlarm("custom_test_alarm_123")
+    org.junit.Assert.assertNull(deleted)
+  }
+
+  @Test
+  fun `gym alarm translations return accurate labels across AR FR and EN`() {
+    val tabAr = com.example.localization.LanguageManager.tabGymAlarm(com.example.data.model.AppLanguage.AR)
+    val tabFr = com.example.localization.LanguageManager.tabGymAlarm(com.example.data.model.AppLanguage.FR)
+    val tabEn = com.example.localization.LanguageManager.tabGymAlarm(com.example.data.model.AppLanguage.EN)
+
+    org.junit.Assert.assertTrue(tabAr.contains("منبه الجيم"))
+    org.junit.Assert.assertTrue(tabFr.contains("Alarme Gym"))
+    org.junit.Assert.assertTrue(tabEn.contains("Gym Alarm"))
+  }
 }

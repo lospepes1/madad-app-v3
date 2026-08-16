@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +48,7 @@ fun InstagramLogoIcon(modifier: Modifier = Modifier) {
     androidx.compose.foundation.Canvas(modifier = modifier) {
         val w = size.width
         val h = size.height
-        val strokeWidth = w * 0.11f
+        val strokeWidth = w * 0.12f
         val cornerRadius = androidx.compose.ui.geometry.CornerRadius(w * 0.28f, h * 0.28f)
 
         // Outer rounded rectangle
@@ -71,21 +71,20 @@ fun InstagramLogoIcon(modifier: Modifier = Modifier) {
         // Top right flash dot
         drawCircle(
             color = Color.White,
-            radius = strokeWidth * 0.7f,
+            radius = strokeWidth * 0.65f,
             center = androidx.compose.ui.geometry.Offset(w * 0.74f, h * 0.26f)
         )
     }
 }
 
 /**
- * Minimal, clean Instagram icon button that uses deep linking to open the Instagram app
- * with fallback to the web browser.
+ * Compact, borderless minimal Instagram icon that opens the Instagram profile: https://www.instagram.com/aminlgeek/
  */
 @Composable
 fun InstagramIconButton(
     modifier: Modifier = Modifier,
-    size: Dp = 38.dp,
-    iconSize: Dp = 20.dp
+    size: Dp = 26.dp,
+    iconSize: Dp = 15.dp
 ) {
     val context = LocalContext.current
 
@@ -99,27 +98,21 @@ fun InstagramIconButton(
         )
     )
 
-    Surface(
+    Box(
         modifier = modifier
-            .size(size)
-            .clip(RoundedCornerShape(12.dp))
-            .border(
-                width = 1.dp,
-                brush = Brush.linearGradient(
-                    listOf(Color(0xFFE1306C).copy(alpha = 0.6f), Color(0xFFFCB045).copy(alpha = 0.6f))
-                ),
-                shape = RoundedCornerShape(12.dp)
+            .size(34.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(bounded = false, radius = 18.dp),
+                onClick = { openInstagramProfile(context) }
             )
-            .clickable {
-                openInstagramProfile(context)
-            }
             .testTag("instagram_profile_btn"),
-        color = Color.Transparent,
-        shape = RoundedCornerShape(12.dp)
+        contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .size(size)
+                .clip(RoundedCornerShape(7.dp))
                 .background(instagramGradient),
             contentAlignment = Alignment.Center
         ) {

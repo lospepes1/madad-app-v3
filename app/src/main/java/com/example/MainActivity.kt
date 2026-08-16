@@ -26,11 +26,15 @@ import com.example.ui.viewmodel.MidadViewModel
 import com.example.ui.viewmodel.Screen
 
 class MainActivity : ComponentActivity() {
+    private var viewModelInstance: MidadViewModel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        handleIntent(intent)
         setContent {
             val viewModel: MidadViewModel = viewModel()
+            viewModelInstance = viewModel
             val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
             val userProfile by viewModel.userProfile.collectAsStateWithLifecycle()
             val layoutDirection = if (userProfile.language == AppLanguage.AR) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -45,6 +49,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: android.content.Intent?) {
+        val targetTab = intent?.getIntExtra("navigate_to_tab", -1) ?: -1
+        if (targetTab >= 0) {
+            viewModelInstance?.setDashboardTab(targetTab)
         }
     }
 }
